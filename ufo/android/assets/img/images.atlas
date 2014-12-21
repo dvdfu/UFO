@@ -1,0 +1,19 @@
+
+images.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+block1
+  rotate: false
+  xy: 2, 14
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+star
+  rotate: false
+  xy: 2, 2
+  size: 40, 10
+  orig: 40, 10
+  offset: 0, 0
+  index: -1
