@@ -52,7 +52,7 @@ public class MainGame extends Game {
 
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(0.5f, 0.6f, 0.9f, 1);
 		if (getScreen() != null) {
 			super.render();
 		}

@@ -13,6 +13,7 @@ import com.dvdfu.ufo.Const;
 import com.dvdfu.ufo.MainGame;
 import com.dvdfu.ufo.components.ImageComponent;
 import com.dvdfu.ufo.objects.BodyMaker;
+import com.dvdfu.ufo.objects.Cow;
 import com.dvdfu.ufo.objects.Floor;
 import com.dvdfu.ufo.objects.Tree;
 import com.dvdfu.ufo.objects.UFO;
@@ -29,11 +30,12 @@ public class MainScreen extends AbstractScreen {
 	UFO player;
 	ArrayList<Tree> trees;
 	Floor floor;
+	Cow cow;
 	
 	public MainScreen(MainGame game) {
 		super(game);
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new OrthographicCamera(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		debugRenderer = new Box2DDebugRenderer();
 		debugRenderer.setDrawJoints(true);
 		
@@ -53,6 +55,9 @@ public class MainScreen extends AbstractScreen {
 			t.attach(floor.getBody());
 			trees.add(t);
 		}
+		
+		cow = new Cow(world);
+		cow.body.setTransform(0, 5, 0);
 	}
 
 	public void render(float delta) {
@@ -77,10 +82,11 @@ public class MainScreen extends AbstractScreen {
 		}
 		player.draw(batch);
 		floor.draw(batch);
+		cow.draw(batch);
 		batch.end();
 
-		camera.combined.scale(10, 10, 0);
-		debugRenderer.render(world, camera.combined);
+//		camera.combined.scale(10, 10, 0);
+//		debugRenderer.render(world, camera.combined);
 	}
 
 	public void resize(int width, int height) {
