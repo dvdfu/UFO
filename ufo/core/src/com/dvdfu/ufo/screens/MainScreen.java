@@ -37,10 +37,10 @@ public class MainScreen extends AbstractScreen {
 		debugRenderer = new Box2DDebugRenderer();
 		debugRenderer.setDrawJoints(true);
 		
-		world = new World(new Vector2(0, -98f), true);
+		world = new World(new Vector2(0, -9.8f), true);
 		maker = new BodyMaker(world);
-		player = new UFO(maker.makeUFO());
-		player.getBody().setTransform(0, 20, 0);
+		player = new UFO(world);
+		player.getBody().setTransform(0, 30, 0);
 		floor = new Floor(maker.makeFloor(100, 0));
 		spr = new ImageComponent(Const.atlas.findRegion("star"), 10);
 		trees = new ArrayList<Tree>();
@@ -56,11 +56,12 @@ public class MainScreen extends AbstractScreen {
 	}
 
 	public void render(float delta) {
-		camera.position.set(player.getBody().getWorldCenter().scl(10), 0);
+		camera.position.set((int) (player.getBody().getWorldCenter().x * 10), (int) ((player.getBody().getWorldCenter().y - 10) * 10), 0);
 		camera.update();
 		world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 		
 		player.update();
+		
 		if (Gdx.input.isTouched()) {
 			for (Tree b : trees) {
 				b.update();

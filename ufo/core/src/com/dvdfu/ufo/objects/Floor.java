@@ -11,8 +11,8 @@ public class Floor {
 
 	public Floor(Body body) {
 		this.body = body;
-		sprite = new SpriteComponent(Const.atlas.findRegion("trunk"), 4);
-		sprite.setSize(1000, 100);
+		sprite = new SpriteComponent(Const.atlas.findRegion("ground"), 10);
+		sprite.setSize(20, 20);
 	}
 
 	public Body getBody() {
@@ -20,7 +20,10 @@ public class Floor {
 	}
 
 	public void draw(SpriteBatch batch) {
-		sprite.draw(batch, -500, -100);
+		for (int i = -25; i < 25; i++) {
+			for (int j = -5; j < 0; j++)
+			sprite.draw(batch, i * 20, j * 20);
+		}
 	}
 
 }

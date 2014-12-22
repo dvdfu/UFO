@@ -42,7 +42,7 @@ public class BodyMaker {
 		floorDef.type = BodyType.StaticBody;
 		
 		PolygonShape floorShape = new PolygonShape();
-		floorShape.setAsBox(length / 2, 0, new Vector2(0, y), 0);
+		floorShape.setAsBox(length / 2, 5, new Vector2(0, y - 5), 0);
 		
 		FixtureDef floorFix = new FixtureDef();
 		floorFix.shape = floorShape;

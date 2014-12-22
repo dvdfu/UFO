@@ -9,6 +9,7 @@ public class SpriteComponent {
 	protected boolean animates;
 	protected float alpha;
 	protected float angle;
+	protected Color color;
 	protected float originX, originY;
 	protected float scaleX, scaleY;
 	protected float width, height;
@@ -25,6 +26,7 @@ public class SpriteComponent {
 	public SpriteComponent(ImageComponent image) {
 		setImage(image);
 		alpha = 1;
+		color = new Color(1, 1, 1, 1);
 		frameRate = 15;
 	}
 	
@@ -41,7 +43,7 @@ public class SpriteComponent {
 	
 	public void draw(SpriteBatch batch, float x, float y) {
 		Color c = batch.getColor();
-		batch.setColor(c.r, c.g, c.b, alpha);
+		batch.setColor(color.r, color.g, color.b, alpha);
 		batch.draw(image.getFrame(frame), x, y, originX, originY, width, height, scaleX, scaleY, angle);
 		batch.setColor(c);
 	}
