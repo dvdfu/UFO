@@ -22,11 +22,11 @@ public class ImageComponent {
 		}
 	}
 	
-	public TextureRegion get() {
-		return get(0);
+	public TextureRegion getFrame() {
+		return getFrame(0);
 	}
 
-	public TextureRegion get(int frame) {
+	public TextureRegion getFrame(int frame) {
 		while (frame < 0) {
 			frame += length;
 		}
