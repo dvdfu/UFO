@@ -13,9 +13,11 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.dvdfu.ufo.Const;
-import com.dvdfu.ufo.Image;
 import com.dvdfu.ufo.MainGame;
+import com.dvdfu.ufo.components.ImageComponent;
 import com.dvdfu.ufo.objects.BodyMaker;
+import com.dvdfu.ufo.objects.Rope;
+import com.dvdfu.ufo.objects.Tree;
 import com.dvdfu.ufo.objects.UFO;
 
 public class MainScreen extends AbstractScreen {
@@ -26,10 +28,11 @@ public class MainScreen extends AbstractScreen {
 	World world;
 	Const consts = new Const();
 	
-	Image spr;
+	ImageComponent spr;
 	UFO player;
-	ArrayList<Body> abductable;
+	ArrayList<Tree> trees;
 	ArrayList<RevoluteJoint> roots;
+	Rope rope;
 	
 	public MainScreen(MainGame game) {
 		super(game);
@@ -43,27 +46,30 @@ public class MainScreen extends AbstractScreen {
 		player = new UFO(maker.makeUFO());
 		player.getBody().setTransform(0, 20, 0);
 		Body floor = maker.makeFloor(100, 0);
-		spr = new Image(consts.atlas.findRegion("star"), 10);
-		abductable = new ArrayList<Body>();
+		spr = new ImageComponent(Const.atlas.findRegion("star"), 10);
+		trees = new ArrayList<Tree>();
 		roots = new ArrayList<RevoluteJoint>();
+		rope = new Rope(world, 10, 1);
 		
 		for (int i = 0; i < 10; i++) {
-			abductable.add(maker.makeTree(3 + MathUtils.random(-1f, 1f), 
-					0.25f + MathUtils.random(-0.1f, 0.1f), 
-					1.5f + MathUtils.random(-0.25f, 0.25f)));
-			abductable.get(i).setTransform((i - 4) * 5, 0, 0);
+			Tree t = new Tree(world, 0.25f + MathUtils.random(-0.1f, 0.1f), 
+					3 + MathUtils.random(-1f, 1f), 
+					1.5f + MathUtils.random(-0.25f, 0.25f));
+			t.tree.setTransform((i - 4) * 5, 0, 0);
+			trees.add(t);
 		}
+
+		RevoluteJointDef jointDef = new RevoluteJointDef();
+		jointDef.localAnchorA.set(0, 0);
+		jointDef.bodyB = floor;
+		jointDef.collideConnected = true;
+		jointDef.lowerAngle = -30 * MathUtils.degRad;
+		jointDef.upperAngle = 30 * MathUtils.degRad;
+		jointDef.enableLimit = true;
 		
 		for (int i = 0; i < 10; i++) {
-			RevoluteJointDef jointDef = new RevoluteJointDef();
-			jointDef.bodyA = abductable.get(i);
-			jointDef.localAnchorA.set(0, 0);
-			jointDef.bodyB = floor;
-			jointDef.collideConnected = true;
-			jointDef.lowerAngle = -30 * MathUtils.degRad;
-			jointDef.upperAngle = 30 * MathUtils.degRad;
-			jointDef.enableLimit = true;
-			Vector2 worldp = new Vector2(abductable.get(i).getWorldPoint(new Vector2(0, 0)));
+			jointDef.bodyA = trees.get(i).tree;
+			Vector2 worldp = new Vector2(trees.get(i).tree.getWorldPoint(new Vector2(0, 0)));
 			jointDef.localAnchorB.set(floor.getLocalVector(worldp));
 			roots.add((RevoluteJoint) world.createJoint(jointDef));
 		}
@@ -76,10 +82,10 @@ public class MainScreen extends AbstractScreen {
 		
 		player.update();
 		if (Gdx.input.isTouched()) {
-			for (Body b : abductable) {
-				Vector2 diff = player.getBody().getWorldCenter().cpy().sub(b.getWorldCenter());
+			for (Tree b : trees) {
+				Vector2 diff = player.getBody().getWorldCenter().cpy().sub(b.tree.getWorldCenter());
 				float scale = 6 / diff.len() / diff.len();
-				b.applyLinearImpulse(diff.scl(scale), b.getWorldCenter(), true);
+				b.tree.applyLinearImpulse(diff.scl(scale), b.tree.getWorldCenter(), true);
 			}
 		}
 		
@@ -89,17 +95,16 @@ public class MainScreen extends AbstractScreen {
 				world.destroyJoint(rj);
 				roots.remove(rj);
 				i--;
-				
 			}
 		}
 		
-//		batch.setProjectionMatrix(camera.combined);
-//		batch.begin();
-//		for (Body b : abductable) {
-//			batch.draw(spr.get(), b.getWorldPoint(new Vector2(0, 0)).x * 10 - 5, 
-//					b.getWorldPoint(new Vector2(0, 0)).y * 10 - 5);
-//		}
-//		batch.end();
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+		for (Tree b : trees) {
+			b.draw(batch);
+		}
+		rope.draw(batch);
+		batch.end();
 
 		camera.combined.scale(10, 10, 0);
 		debugRenderer.render(world, camera.combined);

@@ -2,6 +2,7 @@ package com.dvdfu.ufo.objects;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -11,12 +12,16 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
+import com.dvdfu.ufo.Const;
+import com.dvdfu.ufo.components.ImageComponent;
+import com.dvdfu.ufo.components.SpriteComponent;
 
 public class Rope {
 	private int segNum;
 	private float segLen;
 	private float maxAngle;
 	private ArrayList<Body> segments;
+	private SpriteComponent sprite;
 	
 	public Rope(World world, int segNum, float segLen) {
 		this.segNum = segNum;
@@ -31,7 +36,7 @@ public class Rope {
 		
 		// SHAPE
 		PolygonShape segmentShape = new PolygonShape();
-		segmentShape.setAsBox(this.segLen, 1);
+		segmentShape.setAsBox(this.segLen, 0.1f);
 		
 		// FIXTUREDEF
 		FixtureDef segmentFix = new FixtureDef();
@@ -72,6 +77,15 @@ public class Rope {
 				world.createJoint(bridgeJoint);
 			}		
 		}
+		
+		sprite = new SpriteComponent(new ImageComponent(Const.atlas.findRegion("star"), 10));
+		sprite.setAnimates(true);
+	}
+	
+	public void draw(SpriteBatch batch) {
+		sprite.update();
+		for (Body b : segments)
+		sprite.drawCentered(batch, b.getPosition().x * 10, b.getPosition().y * 10);
 	}
 	
 	public Body getHead() {

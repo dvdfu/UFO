@@ -10,6 +10,13 @@ block1
   orig: 32, 32
   offset: 0, 0
   index: -1
+leaves
+  rotate: false
+  xy: 36, 14
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 star
   rotate: false
   xy: 2, 2

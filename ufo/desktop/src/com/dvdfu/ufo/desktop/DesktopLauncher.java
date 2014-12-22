@@ -10,7 +10,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 640;
 		config.height = 480;
-		TexturePacker.process("unpacked/", "/home/david/dev/eclipse/ufo/ufo/android/assets/img", "images");
+		TexturePacker.process("unpacked/", "/home/david/workspace/UFO/ufo/android/assets/img", "images");
 		new LwjglApplication(new MainGame(), config);
 	}
 }

@@ -28,7 +28,7 @@ public class BodyMaker {
 		ufoDef.gravityScale = 0;
 		
 		PolygonShape ufoShape = new PolygonShape();
-		ufoShape.setAsBox(6, 0.6f);
+		ufoShape.setAsBox(3, 0.6f);
 		
 		Body ufo = world.createBody(ufoDef);
 		ufo.createFixture(ufoShape, 1);

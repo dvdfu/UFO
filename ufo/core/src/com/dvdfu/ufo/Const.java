@@ -8,7 +8,7 @@ public class Const {
 	public static final int screenHeight = 400;
 	
 	public AssetManager manager;
-	public TextureAtlas atlas;
+	public static TextureAtlas atlas;
 	
 	public static final float mtop = 10;
 
