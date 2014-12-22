@@ -13,10 +13,16 @@ public class UFO {
 	
 	public void update() {
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			moveLeft(2);
+			moveLeft(3);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			moveRight(2);
+			moveRight(3);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+			moveDown(3);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+			moveUp(3);
 		}
 	}
 	
@@ -26,6 +32,14 @@ public class UFO {
 	
 	public void moveRight(float speed) {
 		body.applyLinearImpulse(new Vector2(speed, 0), body.getLocalCenter(), true);
+	}
+	
+	public void moveDown(float speed) {
+		body.applyLinearImpulse(new Vector2(0, -speed), body.getLocalCenter(), true);
+	}
+	
+	public void moveUp(float speed) {
+		body.applyLinearImpulse(new Vector2(0, speed), body.getLocalCenter(), true);
 	}
 	
 	public Body getBody() {
