@@ -2,8 +2,8 @@ package com.dvdfu.ufo.objects;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -15,7 +15,6 @@ import com.dvdfu.ufo.components.ShaderComponent;
 import com.dvdfu.ufo.components.SpriteComponent;
 
 public class Ray extends GameObj {
-	public Body body;
 	private FixtureDef rayFix;
 	private PolygonShape rayShape;
 	private Fixture fix;
@@ -28,9 +27,8 @@ public class Ray extends GameObj {
 	public Ray(World world) {
 		super(world);
 		size = new Vector2();
-
 		sprite = new SpriteComponent(Const.atlas.findRegion("ray"), 160);
-		sprite.setColor(0.70f, 0.85f, 1);
+		sprite.setColor(0.5f, 0.75f, 1);
 		rayShader = new ShaderComponent("shaders/ray.vsh", "shaders/ray.fsh");
 		defShader = new ShaderComponent("shaders/passthrough.vsh", "shaders/passthrough.fsh");
 	}
@@ -41,7 +39,7 @@ public class Ray extends GameObj {
 		sprite.setSize(size.x * 10, size.y * 10);
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_DST_ALPHA);
 		batch.setShader(rayShader);
-		sprite.draw(batch, (body.getPosition().x - size.x / 2) * 10, (body.getPosition().y - size.y - 0.6f) * 10);
+		sprite.draw(batch, (body.getPosition().x - size.x / 2) * 10, (body.getPosition().y - size.y) * 10);
 		batch.setShader(defShader);
 		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	}

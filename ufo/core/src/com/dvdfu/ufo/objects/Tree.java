@@ -16,11 +16,11 @@ import com.dvdfu.ufo.components.ImageComponent;
 import com.dvdfu.ufo.components.SpriteComponent;
 
 public class Tree extends GameObj {
-	public RevoluteJoint root;
-	public RevoluteJointDef rootDef;
+	private RevoluteJoint root;
+	private RevoluteJointDef rootDef;
 	private float width, height;
-	public SpriteComponent leafSpr;
-	public SpriteComponent trunkSpr;
+	private SpriteComponent leafSpr;
+	private SpriteComponent trunkSpr;
 	private boolean detached;
 
 	public Tree(World world) {

@@ -75,8 +75,8 @@ public class UFO extends GameObj {
 		RevoluteJointDef jointDef = new RevoluteJointDef();
 		jointDef.bodyA = body;
 		jointDef.localAnchorA.set(0, 0);
-		jointDef.bodyB = ray.body;
-		jointDef.localAnchorB.set(0, 0);
+		jointDef.bodyB = ray.getBody();
+		jointDef.localAnchorB.set(0, 0.6f);
 
 		world.createJoint(jointDef);
 	}
