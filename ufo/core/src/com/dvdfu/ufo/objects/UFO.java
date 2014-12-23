@@ -35,6 +35,7 @@ public class UFO {
 	public void update() {
 		float height = Math.max(3, body.getPosition().y - 0.6f);
 		ray.setSize(100 / height, height);
+		ray.setPosition(body.getPosition().x, body.getPosition().y);
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 			moveX(-2);
 		}
@@ -65,6 +66,7 @@ public class UFO {
 	}
 
 	public void draw(SpriteBatch batch) {
+		ray.draw(batch);
 		sprite.setSize(60, 12);
 		sprite.setOrigin(30, 6);
 		sprite.drawCentered(batch, body.getWorldCenter().x * 10,

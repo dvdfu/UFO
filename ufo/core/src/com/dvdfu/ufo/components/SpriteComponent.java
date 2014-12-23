@@ -52,6 +52,10 @@ public class SpriteComponent {
 		draw(batch, x - width / 2, y - height / 2);
 	}
 	
+	public void drawOrigin(SpriteBatch batch, float x, float y) {
+		draw(batch, x - originX, y - originY);
+	}
+	
 	public void setAlpha(float alpha) {
 		this.alpha = alpha;
 	}
@@ -62,6 +66,12 @@ public class SpriteComponent {
 	
 	public void setAnimates(boolean animates) {
 		this.animates = animates;
+	}
+	
+	public void setColor(float r, float g, float b) {
+		color.r = r;
+		color.g = g;
+		color.b = b;
 	}
 	
 	public void setFrame(int frame) {

@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.dvdfu.ufo.Const;
 import com.dvdfu.ufo.MainGame;
 import com.dvdfu.ufo.components.ImageComponent;
+import com.dvdfu.ufo.components.ShaderComponent;
 import com.dvdfu.ufo.objects.BodyMaker;
 import com.dvdfu.ufo.objects.Cow;
 import com.dvdfu.ufo.objects.Floor;
@@ -26,6 +27,7 @@ public class MainScreen extends AbstractScreen {
 	BodyMaker maker;
 	World world;
 	Const consts = new Const();
+	ShaderComponent fbShader;
 	
 	ImageComponent spr;
 	UFO player;
@@ -36,11 +38,13 @@ public class MainScreen extends AbstractScreen {
 	public MainScreen(MainGame game) {
 		super(game);
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		debugRenderer = new Box2DDebugRenderer();
 		debugRenderer.setDrawJoints(true);
+		fbShader = new ShaderComponent("shaders/passthrough.vsh", "shaders/passthrough.fsh");
+		batch.setShader(fbShader);
 		
-		world = new World(new Vector2(0, -9.8f), true);
+		world = new World(new Vector2(0, -50f), true);
 		maker = new BodyMaker(world);
 		player = new UFO(world);
 		player.getBody().setTransform(0, 30, 0);
@@ -72,11 +76,12 @@ public class MainScreen extends AbstractScreen {
 			for (Tree b : trees) {
 				b.update();
 				Vector2 diff = player.getBody().getWorldCenter().cpy().sub(b.tree.getWorldCenter());
-				float scale = 0.3f / diff.len();
-				b.tree.applyLinearImpulse(diff.scl(scale), b.tree.getWorldCenter(), true);
+				float scale = 100f / diff.len();
+				b.tree.applyForce(diff.scl(scale), b.tree.getWorldCenter(), true);
 			}
 			Vector2 diff = player.getBody().getWorldCenter().cpy().sub(cow.body.getWorldCenter());
-			cow.body.applyLinearImpulse(new Vector2(0.0f, 5 / diff.len()), cow.body.getWorldCenter(), true);
+			float scale = 100f / diff.len();
+			cow.body.applyForce(diff.scl(scale), cow.body.getWorldCenter(), true);
 		}
 		
 		batch.setProjectionMatrix(camera.combined);
@@ -84,13 +89,13 @@ public class MainScreen extends AbstractScreen {
 		for (Tree b : trees) {
 			b.draw(batch);
 		}
-		player.draw(batch);
 		floor.draw(batch);
 		cow.draw(batch);
+		player.draw(batch);
 		batch.end();
 
 		camera.combined.scale(10, 10, 0);
-		debugRenderer.render(world, camera.combined);
+//		debugRenderer.render(world, camera.combined);
 	}
 
 	public void resize(int width, int height) {
