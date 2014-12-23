@@ -31,7 +31,11 @@ public class BodyMaker {
 		ufoShape.setAsBox(3, 0.6f);
 		
 		Body ufo = world.createBody(ufoDef);
-		ufo.createFixture(ufoShape, 1);
+		FixtureDef ufoFix = new FixtureDef();
+		ufoFix.shape = ufoShape;
+		ufoFix.density = 1;
+		ufoFix.friction = 0.9f;
+		ufo.createFixture(ufoFix);
 
 		ufoShape.dispose();
 		return ufo;
@@ -42,7 +46,7 @@ public class BodyMaker {
 		floorDef.type = BodyType.StaticBody;
 		
 		PolygonShape floorShape = new PolygonShape();
-		floorShape.setAsBox(length / 2, 5, new Vector2(0, y - 5), 0);
+		floorShape.setAsBox(length / 2, 10, new Vector2(0, y - 10), 0);
 		
 		FixtureDef floorFix = new FixtureDef();
 		floorFix.shape = floorShape;

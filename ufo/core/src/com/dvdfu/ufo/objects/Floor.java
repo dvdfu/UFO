@@ -21,7 +21,7 @@ public class Floor {
 
 	public void draw(SpriteBatch batch) {
 		for (int i = -25; i < 25; i++) {
-			for (int j = -5; j < 0; j++)
+			for (int j = -10; j < 0; j++)
 			sprite.draw(batch, i * 20, j * 20);
 		}
 	}

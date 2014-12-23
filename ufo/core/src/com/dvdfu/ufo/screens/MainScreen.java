@@ -3,6 +3,7 @@ package com.dvdfu.ufo.screens;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -13,6 +14,7 @@ import com.dvdfu.ufo.Const;
 import com.dvdfu.ufo.MainGame;
 import com.dvdfu.ufo.components.ImageComponent;
 import com.dvdfu.ufo.objects.BodyMaker;
+import com.dvdfu.ufo.objects.Cow;
 import com.dvdfu.ufo.objects.Floor;
 import com.dvdfu.ufo.objects.Tree;
 import com.dvdfu.ufo.objects.UFO;
@@ -29,11 +31,12 @@ public class MainScreen extends AbstractScreen {
 	UFO player;
 	ArrayList<Tree> trees;
 	Floor floor;
+	Cow cow;
 	
 	public MainScreen(MainGame game) {
 		super(game);
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new OrthographicCamera(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		debugRenderer = new Box2DDebugRenderer();
 		debugRenderer.setDrawJoints(true);
 		
@@ -53,22 +56,27 @@ public class MainScreen extends AbstractScreen {
 			t.attach(floor.getBody());
 			trees.add(t);
 		}
+		
+		cow = new Cow(world);
+		cow.body.setTransform(0, 5, 0);
 	}
 
 	public void render(float delta) {
-		camera.position.set((int) (player.getBody().getWorldCenter().x * 10), (int) ((player.getBody().getWorldCenter().y - 10) * 10), 0);
+		camera.position.set((int) (player.getBody().getWorldCenter().x * 10), (int) ((player.getBody().getWorldCenter().y - 5)  * 10), 0);
 		camera.update();
 		world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 		
 		player.update();
 		
-		if (Gdx.input.isTouched()) {
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
 			for (Tree b : trees) {
 				b.update();
 				Vector2 diff = player.getBody().getWorldCenter().cpy().sub(b.tree.getWorldCenter());
-				float scale = 3 / diff.len();
+				float scale = 0.3f / diff.len();
 				b.tree.applyLinearImpulse(diff.scl(scale), b.tree.getWorldCenter(), true);
 			}
+			Vector2 diff = player.getBody().getWorldCenter().cpy().sub(cow.body.getWorldCenter());
+			cow.body.applyLinearImpulse(new Vector2(0.0f, 5 / diff.len()), cow.body.getWorldCenter(), true);
 		}
 		
 		batch.setProjectionMatrix(camera.combined);
@@ -78,6 +86,7 @@ public class MainScreen extends AbstractScreen {
 		}
 		player.draw(batch);
 		floor.draw(batch);
+		cow.draw(batch);
 		batch.end();
 
 		camera.combined.scale(10, 10, 0);

@@ -5,35 +5,42 @@ filter: Nearest,Nearest
 repeat: none
 block1
   rotate: false
-  xy: 2, 20
+  xy: 2, 26
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+cow
+  rotate: false
+  xy: 70, 49
+  size: 14, 9
+  orig: 14, 9
+  offset: 0, 0
+  index: -1
 ground
   rotate: false
-  xy: 70, 42
+  xy: 2, 2
   size: 10, 10
   orig: 10, 10
   offset: 0, 0
   index: -1
 leaves
   rotate: false
-  xy: 36, 20
+  xy: 36, 26
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star
   rotate: false
-  xy: 2, 8
+  xy: 2, 14
   size: 40, 10
   orig: 40, 10
   offset: 0, 0
   index: -1
 trunk
   rotate: false
-  xy: 2, 2
+  xy: 44, 20
   size: 4, 4
   orig: 4, 4
   offset: 0, 0
