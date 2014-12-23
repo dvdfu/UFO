@@ -1,5 +1,6 @@
 package com.dvdfu.ufo.objects;
 
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -48,7 +49,7 @@ public class Ray {
 		rayFix.isSensor = true;
 		fix = body.createFixture(rayFix);
 		sprite = new SpriteComponent(Const.atlas.findRegion("ray"), 160);
-		sprite.setColor(0.5f, 1, 1);
+		sprite.setColor(0.70f, 0.85f, 1);
 		rayShader = new ShaderComponent("shaders/ray.vsh", "shaders/ray.fsh");
 		defShader = new ShaderComponent("shaders/passthrough.vsh", "shaders/passthrough.fsh");
 	}
@@ -74,8 +75,10 @@ public class Ray {
 	
 	public void draw(SpriteBatch batch) {
 		sprite.setSize(size.x * 10, size.y * 10);
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_DST_ALPHA);
 		batch.setShader(rayShader);
 		sprite.draw(batch, (position.x - size.x / 2) * 10, (position.y - size.y - 0.6f) * 10);
 		batch.setShader(defShader);
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	}
 }

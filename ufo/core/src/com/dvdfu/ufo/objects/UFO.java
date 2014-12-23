@@ -66,6 +66,7 @@ public class UFO {
 	}
 
 	public void draw(SpriteBatch batch) {
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
 		ray.draw(batch);
 		sprite.setSize(60, 12);
 		sprite.setOrigin(30, 6);

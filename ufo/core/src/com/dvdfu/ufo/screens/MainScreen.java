@@ -40,9 +40,10 @@ public class MainScreen extends AbstractScreen {
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		debugRenderer = new Box2DDebugRenderer();
-		debugRenderer.setDrawJoints(true);
+		debugRenderer.setDrawVelocities(true);
 		fbShader = new ShaderComponent("shaders/passthrough.vsh", "shaders/passthrough.fsh");
 		batch.setShader(fbShader);
+		batch.enableBlending();
 		
 		world = new World(new Vector2(0, -50f), true);
 		maker = new BodyMaker(world);
@@ -80,7 +81,7 @@ public class MainScreen extends AbstractScreen {
 				b.tree.applyForce(diff.scl(scale), b.tree.getWorldCenter(), true);
 			}
 			Vector2 diff = player.getBody().getWorldCenter().cpy().sub(cow.body.getWorldCenter());
-			float scale = 100f / diff.len();
+			float scale = 80f / diff.len();
 			cow.body.applyForce(diff.scl(scale), cow.body.getWorldCenter(), true);
 		}
 		
