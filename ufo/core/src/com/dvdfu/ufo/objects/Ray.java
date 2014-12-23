@@ -14,22 +14,39 @@ import com.dvdfu.ufo.Const;
 import com.dvdfu.ufo.components.ShaderComponent;
 import com.dvdfu.ufo.components.SpriteComponent;
 
-public class Ray {
+public class Ray extends GameObj {
 	public Body body;
 	private FixtureDef rayFix;
 	private PolygonShape rayShape;
 	private Fixture fix;
 	private Vector2[] vertices;
-	private Vector2 position;
 	private Vector2 size;
 	private SpriteComponent sprite;
 	private ShaderComponent rayShader;
 	private ShaderComponent defShader;
 
 	public Ray(World world) {
-		position = new Vector2();
+		super(world);
 		size = new Vector2();
-		
+
+		sprite = new SpriteComponent(Const.atlas.findRegion("ray"), 160);
+		sprite.setColor(0.70f, 0.85f, 1);
+		rayShader = new ShaderComponent("shaders/ray.vsh", "shaders/ray.fsh");
+		defShader = new ShaderComponent("shaders/passthrough.vsh", "shaders/passthrough.fsh");
+	}
+
+	public void update() {}
+
+	public void draw(SpriteBatch batch) {
+		sprite.setSize(size.x * 10, size.y * 10);
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_DST_ALPHA);
+		batch.setShader(rayShader);
+		sprite.draw(batch, (body.getPosition().x - size.x / 2) * 10, (body.getPosition().y - size.y - 0.6f) * 10);
+		batch.setShader(defShader);
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	public void buildBody() {
 		BodyDef rayDef = new BodyDef();
 		rayDef.type = BodyType.DynamicBody;
 		rayDef.fixedRotation = true;
@@ -38,8 +55,8 @@ public class Ray {
 		rayShape = new PolygonShape();
 		vertices = new Vector2[3];
 		vertices[0] = new Vector2(0, 0);
-		vertices[1] = new Vector2(-1/2f, -2);
-		vertices[2] = new Vector2(1/2f, -2);
+		vertices[1] = new Vector2(-1 / 2f, -2);
+		vertices[2] = new Vector2(1 / 2f, -2);
 		rayShape.set(vertices);
 
 		body = world.createBody(rayDef);
@@ -48,37 +65,19 @@ public class Ray {
 		rayFix.shape = rayShape;
 		rayFix.isSensor = true;
 		fix = body.createFixture(rayFix);
-		sprite = new SpriteComponent(Const.atlas.findRegion("ray"), 160);
-		sprite.setColor(0.70f, 0.85f, 1);
-		rayShader = new ShaderComponent("shaders/ray.vsh", "shaders/ray.fsh");
-		defShader = new ShaderComponent("shaders/passthrough.vsh", "shaders/passthrough.fsh");
 	}
-	
-	public void setPosition(float x, float y) {
-		position.set(x, y);
-	}
-	
+
 	public void setSize(float width, float height) {
 		size.set(width, height);
-		vertices[1].set(- size.x / 2, -size.y);
+		vertices[1].set(-size.x / 2, -size.y);
 		vertices[2].set(size.x / 2, -size.y);
 		rayShape.set(vertices);
 		rayFix.shape = rayShape;
 		body.destroyFixture(fix);
 		fix = body.createFixture(rayFix);
-		setPosition(position.x, position.y);
 	}
-	
+
 	public float getHeight() {
 		return size.y;
-	}
-	
-	public void draw(SpriteBatch batch) {
-		sprite.setSize(size.x * 10, size.y * 10);
-		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_DST_ALPHA);
-		batch.setShader(rayShader);
-		sprite.draw(batch, (position.x - size.x / 2) * 10, (position.y - size.y - 0.6f) * 10);
-		batch.setShader(defShader);
-		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	}
 }
