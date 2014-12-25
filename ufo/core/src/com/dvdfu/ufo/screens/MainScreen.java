@@ -51,15 +51,15 @@ public class MainScreen extends AbstractScreen {
 		spr = new ImageComponent(Const.atlas.findRegion("star"), 10);
 		objects = new ArrayList<GameObj>();
 
-//		for (int i = 0; i < 10; i++) {
-//			Tree t = new Tree(world);
-//			t.getBody().setTransform((i - 4) * 5, 0, 0);
-//			t.attach(floor.getBody());
-//			objects.add(t);
-//		}
+		for (int i = 0; i < 7; i++) {
+			Tree t = new Tree(world);
+			t.getBody().setTransform((i + 2) * 5, 0, 0);
+			t.attach(floor.getBody());
+			objects.add(t);
+		}
 
 		Cow cow = new Cow(world);
-		cow.getBody().setTransform(0, 5, 0);
+		cow.getBody().setTransform(-1, 5, 0);
 		objects.add(cow);
 
 		Hydrant hydrant = new Hydrant(world);
@@ -80,11 +80,16 @@ public class MainScreen extends AbstractScreen {
 		player.update();
 
 		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+
 			for (GameObj b : objects) {
 				b.update();
 				Vector2 diff = player.getBody().getWorldCenter().cpy().sub(b.getBody().getWorldCenter());
-				float scale = 150f / diff.len();
-				b.getBody().applyForce(diff.scl(scale), b.getBody().getWorldCenter(), true);
+				diff.scl(150f / diff.len());
+				if (Math.abs(diff.x) > 30) {
+					b.getBody().applyForce(new Vector2(diff.x, 0), b.getBody().getWorldCenter(), true);
+				} else {
+					b.getBody().applyForce(new Vector2(0, diff.y), b.getBody().getWorldCenter(), true);
+				}
 			}
 		}
 
@@ -98,7 +103,7 @@ public class MainScreen extends AbstractScreen {
 		batch.end();
 
 		camera.combined.scale(10, 10, 0);
-		debugRenderer.render(world, camera.combined);
+//		debugRenderer.render(world, camera.combined);
 	}
 
 	public void resize(int width, int height) {}

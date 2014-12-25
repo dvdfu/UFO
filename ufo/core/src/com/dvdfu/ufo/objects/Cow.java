@@ -1,7 +1,6 @@
 package com.dvdfu.ufo.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -26,7 +25,7 @@ public class Cow extends GameObj {
 	public void draw(SpriteBatch batch) {
 		sprite.setSize(15, 10);
 		sprite.setOrigin(7.5f, 5);
-		sprite.setAngle(body.getAngle() * MathUtils.radDeg);
+		sprite.setAngle(body.getAngle());
 		sprite.drawCentered(batch, body.getPosition().x * 10, body.getPosition().y * 10);
 	}
 

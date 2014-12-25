@@ -40,7 +40,7 @@ public class Tree extends GameObj {
 		Vector2 p = body.getWorldPoint(new Vector2(0, height / 2));
 		trunkSpr.setSize(width * 10, height * 10);
 		trunkSpr.setOrigin(width * 5, height * 5);
-		trunkSpr.setAngle(body.getAngle() * MathUtils.radDeg);
+		trunkSpr.setAngle(body.getAngle());
 		trunkSpr.drawCentered(batch, p.x * 10, p.y * 10);
 
 		p = body.getWorldPoint(new Vector2(0, height));
@@ -56,7 +56,7 @@ public class Tree extends GameObj {
 		
 		width = 0.5f + MathUtils.random(0.2f);
 		height = 3 + MathUtils.random(-1f, 0); 
-		float radius = 1.5f + MathUtils.random(-0.25f, 0.25f);
+		float radius = 1.5f + MathUtils.random(0.25f);
 
 		PolygonShape trunkShape = new PolygonShape();
 		trunkShape.setAsBox(width / 2, height / 2, new Vector2(0, height / 2), 0);

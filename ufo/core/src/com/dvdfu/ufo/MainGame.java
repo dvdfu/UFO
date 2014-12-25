@@ -14,10 +14,6 @@ public class MainGame extends Game {
 	public void create() {
 		screens = new Stack<AbstractScreen>();
 		enterScreen(new MainScreen(this));
-		//components:
-		//move (non box2d)
-		//box2d
-		//draws
 		
 	}
 
@@ -52,7 +48,7 @@ public class MainGame extends Game {
 
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl.glClearColor(0.1f, 0.2f, 0.2f, 1);
+		Gdx.gl.glClearColor(0.5f, 0.75f, 0.8f, 1);
 		if (getScreen() != null) {
 			super.render();
 		}

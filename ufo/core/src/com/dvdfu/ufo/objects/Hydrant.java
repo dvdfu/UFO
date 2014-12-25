@@ -36,7 +36,7 @@ public class Hydrant extends GameObj {
 	public void draw(SpriteBatch batch) {
 		sprite.setSize(6, 10);
 		sprite.setOrigin(3, 0);
-		sprite.setAngle(body.getAngle() * MathUtils.radDeg);
+		sprite.setAngle(body.getAngle());
 		sprite.drawOrigin(batch, body.getPosition().x * 10, body.getPosition().y * 10);
 	}
 

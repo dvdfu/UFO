@@ -3,6 +3,7 @@ package com.dvdfu.ufo.components;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 
 public class SpriteComponent {
 	protected ImageComponent image;
@@ -21,6 +22,7 @@ public class SpriteComponent {
 	
 	public SpriteComponent(TextureRegion tex, int width) {
 		this(new ImageComponent(tex, width));
+		animates = true;
 	}
 	
 	public SpriteComponent(ImageComponent image) {
@@ -61,7 +63,7 @@ public class SpriteComponent {
 	}
 	
 	public void setAngle(float angle) {
-		this.angle = angle;
+		this.angle = angle * MathUtils.radDeg;
 	}
 	
 	public void setAnimates(boolean animates) {
@@ -76,15 +78,26 @@ public class SpriteComponent {
 	
 	public void setFrame(int frame) {
 		this.frame = frame;
+		count = 0;
 	}
 	
 	public void setFrameRate(int frameRate) {
 		this.frameRate = frameRate;
 	}
 	
+	public void setImage(TextureRegion tex) {
+		setImage(new ImageComponent(tex));
+	}
+	
+	public void setImage(TextureRegion tex, int width) {
+		setImage(new ImageComponent(tex, width));
+		animates = true;
+	}
+	
 	public void setImage(ImageComponent image) {
 		this.image = image;
 		frame = 0;
+		count = 0;
 		width = image.getWidth();
 		height = image.getHeight();
 		originX = width / 2;
