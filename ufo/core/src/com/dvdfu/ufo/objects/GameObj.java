@@ -21,7 +21,7 @@ public abstract class GameObj {
 	public abstract void buildBody();
 	
 	public void setPosition(Vector2 position) {
-		body.getTransform().setPosition(position);
+		body.setTransform(position, 0);
 	}
 	
 	public void setPosition(float x, float y) {

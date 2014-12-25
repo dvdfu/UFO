@@ -25,6 +25,7 @@ public class UFO extends GameObj {
 	private ShaderComponent defShader;
 	private Pool<Sparkle> particlePool;
 	private final Array<Sparkle> particles = new Array<Sparkle>();
+	private final float moveSpeed = 10;
 
 	public UFO(World world) {
 		super(world);
@@ -43,16 +44,16 @@ public class UFO extends GameObj {
 
 	public void update() {
 		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-			moveX(-2);
+			moveX(-moveSpeed);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-			moveX(2);
+			moveX(moveSpeed);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-			moveY(-2);
+			moveY(-moveSpeed);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-			moveY(2);
+			moveY(moveSpeed);
 		}
 
 		moveX(-MathUtils.clamp(Gdx.input.getAccelerometerX(), -1, 1));
@@ -86,6 +87,7 @@ public class UFO extends GameObj {
 		}
 		sprite.setSize(60, 12);
 		sprite.setOrigin(30, 6);
+		sprite.setAngle(body.getAngle());
 		sprite.drawCentered(batch, body.getWorldCenter().x * 10, body.getWorldCenter().y * 10);
 	}
 
@@ -102,7 +104,7 @@ public class UFO extends GameObj {
 		body = world.createBody(ufoDef);
 		FixtureDef ufoFix = new FixtureDef();
 		ufoFix.shape = ufoShape;
-		ufoFix.density = 1;
+		ufoFix.density = 10;
 		ufoFix.friction = 0.9f;
 		body.createFixture(ufoFix);
 

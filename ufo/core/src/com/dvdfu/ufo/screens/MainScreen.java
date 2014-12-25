@@ -18,8 +18,9 @@ import com.dvdfu.ufo.objects.Floor;
 import com.dvdfu.ufo.objects.GameObj;
 import com.dvdfu.ufo.objects.Hydrant;
 import com.dvdfu.ufo.objects.Tree;
-import com.dvdfu.ufo.objects.Truck;
 import com.dvdfu.ufo.objects.UFO;
+import com.dvdfu.ufo.objects.vehicles.Tractor;
+import com.dvdfu.ufo.objects.vehicles.Truck;
 
 public class MainScreen extends AbstractScreen {
 	SpriteBatch batch;
@@ -37,10 +38,12 @@ public class MainScreen extends AbstractScreen {
 	public MainScreen(MainGame game) {
 		super(game);
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight());
 		debugRenderer = new Box2DDebugRenderer();
 		// debugRenderer.setDrawVelocities(true);
-		fbShader = new ShaderComponent("shaders/passthrough.vsh", "shaders/passthrough.fsh");
+		fbShader = new ShaderComponent("shaders/passthrough.vsh",
+				"shaders/passthrough.fsh");
 		batch.setShader(fbShader);
 		batch.enableBlending();
 
@@ -53,7 +56,7 @@ public class MainScreen extends AbstractScreen {
 
 		for (int i = 0; i < 7; i++) {
 			Tree t = new Tree(world);
-			t.getBody().setTransform((i + 2) * 5, 0, 0);
+			t.setPosition((i + 2) * 5, 0);
 			t.attach(floor.getBody());
 			objects.add(t);
 		}
@@ -66,30 +69,33 @@ public class MainScreen extends AbstractScreen {
 		hydrant.getBody().setTransform(-30, 0, 0);
 		hydrant.attach(floor.getBody());
 		objects.add(hydrant);
-
-		Truck truck = new Truck(world);
-		truck.setPosition(-40, 0);
-		objects.add(truck);
+		for (int i = 0; i < 4; i++) {
+			Tractor truck = new Tractor(world);
+			truck.setPosition(-10 * i - 1, 3);
+			objects.add(truck);
+		}
+		for (int i = 0; i < 4; i++) {
+			Truck truck = new Truck(world);
+			truck.setPosition(-10 * i, 0);
+			objects.add(truck);
+		}
 	}
 
 	public void render(float delta) {
-		camera.position.set((int) (player.getBody().getWorldCenter().x * 10), (int) ((player.getBody().getWorldCenter().y - 5) * 10), 0);
+		camera.position.set((int) (player.getBody().getWorldCenter().x * 10),
+				(int) ((player.getBody().getWorldCenter().y - 15) * 10), 0);
 		camera.update();
 		world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
 		player.update();
-
 		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-
 			for (GameObj b : objects) {
 				b.update();
-				Vector2 diff = player.getBody().getWorldCenter().cpy().sub(b.getBody().getWorldCenter());
+				Vector2 diff = player.getBody().getWorldCenter().cpy()
+						.sub(b.getBody().getWorldCenter());
 				diff.scl(150f / diff.len());
-				if (Math.abs(diff.x) > 30) {
-					b.getBody().applyForce(new Vector2(diff.x, 0), b.getBody().getWorldCenter(), true);
-				} else {
-					b.getBody().applyForce(new Vector2(0, diff.y), b.getBody().getWorldCenter(), true);
-				}
+				b.getBody()
+						.applyForce(diff, b.getBody().getWorldCenter(), true);
 			}
 		}
 
@@ -103,18 +109,23 @@ public class MainScreen extends AbstractScreen {
 		batch.end();
 
 		camera.combined.scale(10, 10, 0);
-//		debugRenderer.render(world, camera.combined);
+		// debugRenderer.render(world, camera.combined);
 	}
 
-	public void resize(int width, int height) {}
+	public void resize(int width, int height) {
+	}
 
-	public void show() {}
+	public void show() {
+	}
 
-	public void hide() {}
+	public void hide() {
+	}
 
-	public void pause() {}
+	public void pause() {
+	}
 
-	public void resume() {}
+	public void resume() {
+	}
 
 	public void dispose() {
 		world.dispose();

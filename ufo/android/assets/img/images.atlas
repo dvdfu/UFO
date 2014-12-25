@@ -5,98 +5,112 @@ filter: Nearest,Nearest
 repeat: none
 block1
   rotate: false
-  xy: 2, 20
+  xy: 2, 38
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 cow
   rotate: false
-  xy: 326, 157
+  xy: 142, 79
   size: 14, 9
   orig: 14, 9
   offset: 0, 0
   index: -1
 default
   rotate: false
-  xy: 2, 2
+  xy: 36, 54
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 ground
   rotate: false
-  xy: 360, 190
+  xy: 410, 240
   size: 10, 10
   orig: 10, 10
   offset: 0, 0
   index: -1
 hydrant
   rotate: false
-  xy: 142, 60
+  xy: 2, 2
   size: 6, 10
   orig: 6, 10
   offset: 0, 0
   index: -1
 leaves
   rotate: false
-  xy: 326, 168
+  xy: 326, 186
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 ray
   rotate: false
-  xy: 2, 72
+  xy: 2, 90
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
   index: -1
 ray2
   rotate: false
-  xy: 164, 72
+  xy: 164, 90
   size: 160, 160
   orig: 160, 160
   offset: 0, 0
   index: -1
 sparkle
   rotate: false
-  xy: 2, 54
+  xy: 2, 72
   size: 96, 16
   orig: 96, 16
   offset: 0, 0
   index: -1
 star
   rotate: false
-  xy: 100, 60
+  xy: 100, 78
   size: 40, 10
   orig: 40, 10
   offset: 0, 0
   index: -1
+tractorbody
+  rotate: false
+  xy: 2, 14
+  size: 16, 22
+  orig: 16, 22
+  offset: 0, 0
+  index: -1
+tractorhead
+  rotate: false
+  xy: 326, 168
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 truckbody
   rotate: false
-  xy: 326, 202
+  xy: 326, 220
   size: 60, 30
   orig: 60, 30
   offset: 0, 0
   index: -1
 truckhead
   rotate: false
-  xy: 388, 210
+  xy: 388, 228
   size: 20, 22
   orig: 20, 22
   offset: 0, 0
   index: -1
 trunk
   rotate: false
-  xy: 100, 54
+  xy: 100, 72
   size: 4, 4
   orig: 4, 4
   offset: 0, 0
   index: -1
 wheel
   rotate: false
-  xy: 36, 40
+  xy: 360, 206
   size: 12, 12
   orig: 12, 12
   offset: 0, 0

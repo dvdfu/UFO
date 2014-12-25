@@ -26,11 +26,12 @@ public class Tree extends GameObj {
 	public Tree(World world) {
 		super(world);
 		leafSpr = new SpriteComponent(new ImageComponent(Const.atlas.findRegion("leaves"), 32));
+//		leafSpr.setColor(1, MathUtils.random(0.8f, 1), MathUtils.random(0.6f, 1));
 		trunkSpr = new SpriteComponent(new ImageComponent(Const.atlas.findRegion("trunk"), 4));
 	}
 
 	public void update() {
-		if (!detached && root.getReactionForce(60).len() > 2500) {
+		if (!detached && root.getReactionForce(60).len() > 3500) {
 			detached = true;
 			world.destroyJoint(root);
 		}
