@@ -40,7 +40,7 @@ public class GroundScreen extends AbstractScreen {
 		floor = new Terrain(world);
 		objects = new ArrayList<GameObj>();
 		player = new UFO(world);
-		player.setPosition(30, 30);
+		player.setPosition(30, floor.getHeight(30) + 10);
 		
 		for (int i = 0; i < 30; i++) {
 			Tree t = new Tree(world);
@@ -61,7 +61,7 @@ public class GroundScreen extends AbstractScreen {
 
 	public void render(float delta) {
 		camera.position.set((int) (player.getBody().getWorldCenter().x * 10),
-				(int) ((player.getBody().getWorldCenter().y - 15) * 10), 0);
+				(int) ((player.getBody().getWorldCenter().y - 5) * 10), 0);
 		camera.update();
 		world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 

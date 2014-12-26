@@ -4,8 +4,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class Const {
-	public static final int screenWidth = 720 * 3 / 4;
-	public static final int screenHeight = 1280 * 3 / 4;
+	public static final int screenWidth = 720 * 2 / 4;
+	public static final int screenHeight = 720 * 2 / 4;
 	
 	public AssetManager manager;
 	public static TextureAtlas atlas;

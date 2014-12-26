@@ -49,16 +49,16 @@ public class Terrain extends GameObj {
 
 	private void buildMap() {
 		int node;
-		float mu;
+		float mu, n1, n2, n3, n4;
 		for (int i = 0; i < map.length; i++) {
 			if (i % res > 0) { // not a node
 				node = i / res;
 				mu = 1f * i / res - node;
-				if (node > 1 && node < nodes - 2) {
-					map[i] = interCubic(nodeMap[node - 1], nodeMap[node], nodeMap[node + 1], nodeMap[node + 2], mu);
-				} else {
-					map[i] = interCos(nodeMap[node], nodeMap[node + 1], mu);
-				}
+				n1 = node > 0 ? nodeMap[node - 1] : nodeMap[0];
+				n2 = nodeMap[node];
+				n3 = node < nodes - 1 ? nodeMap[node + 1] : nodeMap[nodes];
+				n4 = node < nodes - 2 ? nodeMap[node + 2] : nodeMap[nodes];
+				map[i] = interCubic(n1, n2, n3, n4, mu);
 			} else {
 				map[i] = nodeMap[i / res];
 			}
@@ -67,11 +67,6 @@ public class Terrain extends GameObj {
 
 	private float interLin(float y1, float y2, float mu) {
 		return y1 * (1 - mu) + y2 * mu;
-	}
-
-	private float interCos(float y1, float y2, float mu) {
-		float mu2 = (1 - MathUtils.cos(mu * MathUtils.PI)) / 2;
-		return y1 * (1 - mu2) + y2 * mu2;
 	}
 
 	private float interCubic(float y0, float y1, float y2, float y3, float mu) {
@@ -88,13 +83,17 @@ public class Terrain extends GameObj {
 		return map;
 	}
 
-	public void update() {}
+	public void update() {
+	}
 
 	public void draw(SpriteBatch batch) {
 		for (int i = 0; i < map.length - 1; i++) {
-			for (int j = 0; j < 10; j++) {
+			for (int j = 0; j < 100 / res + 1; j++) {
 				sprite.setSize(1, (var + 50) * 10);
-				sprite.draw(batch, i * 10 + j, (interLin(map[i], map[i + 1], j / 10f) - var - 50) * 10);
+				sprite.draw(
+						batch,
+						i * 100 / res + j,
+						(interLin(map[i], map[i + 1], j * res / 100f) - var - 50) * 10);
 			}
 		}
 	}
@@ -102,7 +101,7 @@ public class Terrain extends GameObj {
 	public void buildBody() {
 		nodes = 40;
 		res = 10;
-		var = 5;
+		var = 20;
 		nodeMap = new float[nodes + 1];
 		map = new float[nodes * res + 1];
 		buildNodeMap();
@@ -112,10 +111,12 @@ public class Terrain extends GameObj {
 		PolygonShape bodyShape = new PolygonShape();
 		Vector2[] vertices = new Vector2[4];
 		for (int i = 0; i < map.length - 1; i++) {
-			vertices[0] = new Vector2(i, map[i]);
-			vertices[1] = new Vector2(i + 1, map[i + 1]);
-			vertices[2] = new Vector2(i, Math.min(map[i], map[i + 1]) - var);
-			vertices[3] = new Vector2(i + 1, Math.min(map[i], map[i + 1]) - var);
+			vertices[0] = new Vector2(i * 10f / res, map[i]);
+			vertices[1] = new Vector2((i + 1) * 10f / res, map[i + 1]);
+			vertices[2] = new Vector2(i * 10f / res, Math.min(map[i],
+					map[i + 1]) - var);
+			vertices[3] = new Vector2((i + 1) * 10f / res, Math.min(map[i],
+					map[i + 1]) - var);
 			bodyShape.set(vertices);
 			body = world.createBody(bodyDef);
 			body.createFixture(bodyShape, 1);
@@ -124,6 +125,7 @@ public class Terrain extends GameObj {
 	}
 
 	public float getHeight(float x) {
+		x *= res / 10f;
 		int realX = MathUtils.clamp((int) x, 0, nodes * res - 1);
 		return interLin(map[realX], map[realX + 1], x % 1);
 	}
