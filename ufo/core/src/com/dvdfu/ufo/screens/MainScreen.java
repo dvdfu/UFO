@@ -61,23 +61,25 @@ public class MainScreen extends AbstractScreen {
 			objects.add(t);
 		}
 
-		Cow cow = new Cow(world);
-		cow.getBody().setTransform(-1, 5, 0);
-		objects.add(cow);
 
 		Hydrant hydrant = new Hydrant(world);
 		hydrant.getBody().setTransform(-30, 0, 0);
 		hydrant.attach(floor.getBody());
 		objects.add(hydrant);
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 2; i++) {
 			Tractor truck = new Tractor(world);
 			truck.setPosition(-10 * i - 1, 3);
 			objects.add(truck);
 		}
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 2; i++) {
 			Truck truck = new Truck(world);
 			truck.setPosition(-10 * i, 0);
 			objects.add(truck);
+		}
+		for (int i = 0; i < 6; i++) {
+			Cow cow = new Cow(world);
+			cow.getBody().setTransform(-i, 5, 0);
+			objects.add(cow);
 		}
 	}
 

@@ -7,7 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.dvdfu.ufo.screens.AbstractScreen;
-import com.dvdfu.ufo.screens.MainScreen;
+import com.dvdfu.ufo.screens.GroundScreen;
 
 public class MainGame extends Game {
 	private Stack<AbstractScreen> screens;
@@ -16,7 +16,7 @@ public class MainGame extends Game {
 	public void create() {
 		framerate = new FPSLogger();
 		screens = new Stack<AbstractScreen>();
-		enterScreen(new MainScreen(this));
+		enterScreen(new GroundScreen(this));
 		
 	}
 

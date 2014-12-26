@@ -20,8 +20,8 @@ public class Tractor extends GameObj {
 	private SpriteComponent truckBody;
 	private SpriteComponent truckHead;
 	private Vector2 p;
-	private final float bodyW = 1.6f, bodyH = 2.2f, headW = 1.6f, headH = 1.2f,
-			wheel1R = 0.7f, wheel1X = -1.1f, wheel2R = 0.5f, wheel2X = 1.2f;
+	private final float bodyW = 1.2f, bodyH = 1.6f, headW = 1.2f, headH = 0.9f,
+			wheel1R = 0.5f, wheel1X = -0.9f, wheel2R = 0.4f, wheel2X = 0.9f;
 
 	public Tractor(World world) {
 		super(world);
@@ -30,8 +30,8 @@ public class Tractor extends GameObj {
 		truckBody.setSize(bodyW * 10, bodyH * 10);
 		truckBody.setOrigin(bodyW * 5, bodyH * 5);
 		truckHead = new SpriteComponent(Const.atlas.findRegion("tractorhead"), 16);
-		truckHead.setSize(19, 19);
-		truckHead.setOrigin(19f / 2, 19f / 2);
+		truckHead.setSize(15, 15);
+		truckHead.setOrigin(15f / 2, 15f / 2);
 		// truckHead.setColor(1, 0.9f, 0.6f);
 		p = new Vector2();
 	}
