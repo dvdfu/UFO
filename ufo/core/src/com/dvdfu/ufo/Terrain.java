@@ -12,9 +12,9 @@ import com.dvdfu.ufo.objects.GameObj;
 
 public class Terrain extends GameObj {
 	private SpriteComponent sprite;
-	private int nodes;
-	private int res;
-	private float var;
+	private final int nodes = 40;
+	private final int res = 2;
+	private final float var = 4;
 	private float[] nodeMap;
 	private float[] map;
 
@@ -99,9 +99,6 @@ public class Terrain extends GameObj {
 	}
 
 	public void buildBody() {
-		nodes = 40;
-		res = 10;
-		var = 20;
 		nodeMap = new float[nodes + 1];
 		map = new float[nodes * res + 1];
 		buildNodeMap();
