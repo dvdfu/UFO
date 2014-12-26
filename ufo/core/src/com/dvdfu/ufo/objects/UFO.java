@@ -26,6 +26,7 @@ public class UFO extends GameObj {
 	private Pool<Sparkle> particlePool;
 	private final Array<Sparkle> particles = new Array<Sparkle>();
 	private final float moveSpeed = 10;
+	private float groundHeight;
 
 	public UFO(World world) {
 		super(world);
@@ -77,8 +78,8 @@ public class UFO extends GameObj {
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-			raySprite.setSize(30, body.getPosition().y * 10);
-			raySprite.setOrigin(15, body.getPosition().y * 10);
+			raySprite.setSize(30, (body.getPosition().y - groundHeight) * 10);
+			raySprite.setOrigin(15, (body.getPosition().y - groundHeight) * 10);
 			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_DST_ALPHA);
 			batch.setShader(rayShader);
 			raySprite.drawOrigin(batch, body.getPosition().x * 10, body.getPosition().y * 10);
@@ -117,5 +118,9 @@ public class UFO extends GameObj {
 
 	public void moveY(float speed) {
 		body.applyLinearImpulse(new Vector2(0, speed), body.getLocalCenter(), true);
+	}
+	
+	public void setGroundHeight(float height) {
+		groundHeight = height;
 	}
 }

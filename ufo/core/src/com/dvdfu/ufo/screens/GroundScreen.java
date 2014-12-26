@@ -14,47 +14,43 @@ import com.dvdfu.ufo.MainGame;
 import com.dvdfu.ufo.Terrain;
 import com.dvdfu.ufo.objects.Cow;
 import com.dvdfu.ufo.objects.GameObj;
+import com.dvdfu.ufo.objects.Tree;
 import com.dvdfu.ufo.objects.UFO;
 import com.dvdfu.ufo.objects.vehicles.Tractor;
-import com.dvdfu.ufo.objects.vehicles.Truck;
 
 public class GroundScreen extends AbstractScreen {
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
 	private Box2DDebugRenderer debugRenderer;
 	private World world;
-
-	ArrayList<GameObj> objects;
-	UFO player;
+	private Terrain floor;
+	private ArrayList<GameObj> objects;
+	private UFO player;
 
 	public GroundScreen(MainGame game) {
 		super(game);
+		Const c = new Const();
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
 		debugRenderer = new Box2DDebugRenderer();
+		debugRenderer.setDrawJoints(false);
 		world = new World(new Vector2(0, -50), true);
-
-		Terrain t = new Terrain(world);
-		t.getMap();
-		Const c = new Const();
+		floor = new Terrain(world);
 		objects = new ArrayList<GameObj>();
 		player = new UFO(world);
 		player.setPosition(30, 30);
-
-		for (int i = 0; i < 2; i++) {
+		
+		for (int i = 0; i < 30; i++) {
+			Tree t = new Tree(world);
+			t.setPosition((i + 2) * 5, floor.getMap()[(i + 2) * 5]);
+			t.attach(floor.getBody());
+			objects.add(t);
 			Tractor truck = new Tractor(world);
-			truck.setPosition(10 * i - 1, 30);
+			truck.setPosition((i + 2) * 5, floor.getMap()[(i + 2) * 5] + 3);
 			objects.add(truck);
-		}
-		for (int i = 0; i < 2; i++) {
-			Truck truck = new Truck(world);
-			truck.setPosition(10 * i, 30);
-			objects.add(truck);
-		}
-		for (int i = 0; i < 6; i++) {
 			Cow cow = new Cow(world);
-			cow.setPosition(10 * i, 30);
+			cow.setPosition((i + 2) * 5, floor.getMap()[(i + 2) * 5] + 6);
 			objects.add(cow);
 		}
 	}
@@ -67,25 +63,25 @@ public class GroundScreen extends AbstractScreen {
 
 		player.update();
 		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+			player.setGroundHeight(floor.getHeight(player.getBody().getPosition().x));
 			for (GameObj b : objects) {
 				b.update();
-				Vector2 diff = player.getBody().getWorldCenter().cpy()
-						.sub(b.getBody().getWorldCenter());
+				Vector2 diff = player.getBody().getWorldCenter().cpy().sub(b.getBody().getWorldCenter());
 				diff.scl(150f / diff.len());
-				b.getBody()
-						.applyForce(diff, b.getBody().getWorldCenter(), true);
+				b.getBody().applyForce(diff, b.getBody().getWorldCenter(), true);
 			}
 		}
 
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+		floor.draw(batch);
 		for (GameObj b : objects) {
 			b.draw(batch);
 		}
 		player.draw(batch);
 		batch.end();
-		camera.combined.scale(10, 10, 0);
-		debugRenderer.render(world, camera.combined);
+//		camera.combined.scale(10, 10, 0);
+//		debugRenderer.render(world, camera.combined);
 	}
 
 	public void resize(int width, int height) {

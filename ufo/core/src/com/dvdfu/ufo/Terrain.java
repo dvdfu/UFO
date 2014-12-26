@@ -1,15 +1,17 @@
 package com.dvdfu.ufo;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.dvdfu.ufo.components.SpriteComponent;
+import com.dvdfu.ufo.objects.GameObj;
 
-public class Terrain {
-	private World world;
+public class Terrain extends GameObj {
+	private SpriteComponent sprite;
 	private int nodes;
 	private int res;
 	private float var;
@@ -17,15 +19,8 @@ public class Terrain {
 	private float[] map;
 
 	public Terrain(World world) {
-		this.world = world;
-		nodes = 20;
-		res = 5;
-		var = 2;
-		nodeMap = new float[nodes + 1];
-		map = new float[nodes * res + 1];
-		buildNodeMap();
-		buildMap();
-		buildBodies();
+		super(world);
+		sprite = new SpriteComponent(Const.atlas.findRegion("ground"));
 	}
 
 	private void buildNodeMap() {
@@ -43,10 +38,10 @@ public class Terrain {
 				}
 				nodeMap[i] = nodeMap[i - 1] + MathUtils.random(lower, upper);
 			} else if (i == 1) {
-//				nodeMap[1] = nodeMap[0] + MathUtils.random(-var, var);
+				// nodeMap[1] = nodeMap[0] + MathUtils.random(-var, var);
 				nodeMap[1] = MathUtils.random(-var, var);
 			} else {
-//				nodeMap[0] = MathUtils.random(-var, var);
+				// nodeMap[0] = MathUtils.random(-var, var);
 				nodeMap[0] = 0;
 			}
 		}
@@ -58,11 +53,9 @@ public class Terrain {
 		for (int i = 0; i < map.length; i++) {
 			if (i % res > 0) { // not a node
 				node = i / res;
-				System.out.println(node);
 				mu = 1f * i / res - node;
 				if (node > 1 && node < nodes - 2) {
-					map[i] = interCubic(nodeMap[node - 1], nodeMap[node],
-							nodeMap[node + 1], nodeMap[node + 2], mu);
+					map[i] = interCubic(nodeMap[node - 1], nodeMap[node], nodeMap[node + 1], nodeMap[node + 2], mu);
 				} else {
 					map[i] = interCos(nodeMap[node], nodeMap[node + 1], mu);
 				}
@@ -70,23 +63,6 @@ public class Terrain {
 				map[i] = nodeMap[i / res];
 			}
 		}
-	}
-	
-	private void buildBodies() {
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = BodyType.StaticBody;
-		PolygonShape bodyShape = new PolygonShape();
-		Vector2[] vertices = new Vector2[4];
-		for (int i = 0; i < map.length - 1; i++) {
-			vertices[0] = new Vector2(i - 50, map[i]);
-			vertices[1] = new Vector2(i + 1 - 50, map[i + 1]);
-			vertices[2] = new Vector2(i - 50, Math.min(map[i], map[i + 1]) - var);
-			vertices[3] = new Vector2(i + 1 - 50, Math.min(map[i], map[i + 1]) - var);
-			bodyShape.set(vertices);
-			Body body = world.createBody(bodyDef);
-			body.createFixture(bodyShape, 1);
-		}
-		bodyShape.dispose();
 	}
 
 	private float interCos(float y1, float y2, float mu) {
@@ -106,5 +82,43 @@ public class Terrain {
 
 	public float[] getMap() {
 		return map;
+	}
+
+	public void update() {}
+
+	public void draw(SpriteBatch batch) {
+		for (int i = 0; i < map.length - 1; i++) {
+			sprite.setSize(10, (var + 50) * 10);
+			sprite.draw(batch, i * 10, (Math.min(map[i], map[i + 1]) - var - 50) * 10);
+		}
+	}
+
+	public void buildBody() {
+		nodes = 40;
+		res = 20;
+		var = 10;
+		nodeMap = new float[nodes + 1];
+		map = new float[nodes * res + 1];
+		buildNodeMap();
+		buildMap();
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.StaticBody;
+		PolygonShape bodyShape = new PolygonShape();
+		Vector2[] vertices = new Vector2[4];
+		for (int i = 0; i < map.length - 1; i++) {
+			vertices[0] = new Vector2(i, map[i]);
+			vertices[1] = new Vector2(i + 1, map[i + 1]);
+			vertices[2] = new Vector2(i, Math.min(map[i], map[i + 1]) - var);
+			vertices[3] = new Vector2(i + 1, Math.min(map[i], map[i + 1]) - var);
+			bodyShape.set(vertices);
+			body = world.createBody(bodyDef);
+			body.createFixture(bodyShape, 1);
+		}
+		bodyShape.dispose();
+	}
+	
+	public float getHeight(float x) {
+		int realX = MathUtils.clamp((int) (x + 0.5f), 0, nodes * res);
+		return map[realX];
 	}
 }

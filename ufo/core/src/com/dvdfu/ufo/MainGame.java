@@ -53,6 +53,7 @@ public class MainGame extends Game {
 		framerate.log();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(0.7f, 0.9f, 1, 1);
+//		Gdx.gl.glClearColor(0, 0, 0, 1);
 		if (getScreen() != null) {
 			super.render();
 		}

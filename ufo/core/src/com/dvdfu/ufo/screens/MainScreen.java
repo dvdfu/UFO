@@ -61,7 +61,6 @@ public class MainScreen extends AbstractScreen {
 			objects.add(t);
 		}
 
-
 		Hydrant hydrant = new Hydrant(world);
 		hydrant.getBody().setTransform(-30, 0, 0);
 		hydrant.attach(floor.getBody());
