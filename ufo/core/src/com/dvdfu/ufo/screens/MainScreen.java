@@ -89,7 +89,7 @@ public class MainScreen extends AbstractScreen {
 		world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
 		player.update();
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isTouched()) {
 			for (GameObj b : objects) {
 				b.update();
 				Vector2 diff = player.getBody().getWorldCenter().cpy()

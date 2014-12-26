@@ -65,6 +65,10 @@ public class Terrain extends GameObj {
 		}
 	}
 
+	private float interLin(float y1, float y2, float mu) {
+		return y1 * (1 - mu) + y2 * mu;
+	}
+
 	private float interCos(float y1, float y2, float mu) {
 		float mu2 = (1 - MathUtils.cos(mu * MathUtils.PI)) / 2;
 		return y1 * (1 - mu2) + y2 * mu2;
@@ -88,15 +92,17 @@ public class Terrain extends GameObj {
 
 	public void draw(SpriteBatch batch) {
 		for (int i = 0; i < map.length - 1; i++) {
-			sprite.setSize(10, (var + 50) * 10);
-			sprite.draw(batch, i * 10, (Math.min(map[i], map[i + 1]) - var - 50) * 10);
+			for (int j = 0; j < 10; j++) {
+				sprite.setSize(1, (var + 50) * 10);
+				sprite.draw(batch, i * 10 + j, (interLin(map[i], map[i + 1], j / 10f) - var - 50) * 10);
+			}
 		}
 	}
 
 	public void buildBody() {
 		nodes = 40;
-		res = 20;
-		var = 10;
+		res = 10;
+		var = 5;
 		nodeMap = new float[nodes + 1];
 		map = new float[nodes * res + 1];
 		buildNodeMap();
@@ -116,9 +122,9 @@ public class Terrain extends GameObj {
 		}
 		bodyShape.dispose();
 	}
-	
+
 	public float getHeight(float x) {
-		int realX = MathUtils.clamp((int) (x + 0.5f), 0, nodes * res);
-		return map[realX];
+		int realX = MathUtils.clamp((int) x, 0, nodes * res - 1);
+		return interLin(map[realX], map[realX + 1], x % 1);
 	}
 }

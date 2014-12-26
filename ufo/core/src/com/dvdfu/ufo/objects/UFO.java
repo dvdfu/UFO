@@ -25,7 +25,7 @@ public class UFO extends GameObj {
 	private ShaderComponent defShader;
 	private Pool<Sparkle> particlePool;
 	private final Array<Sparkle> particles = new Array<Sparkle>();
-	private final float moveSpeed = 10;
+	private final float moveSpeed = 20;
 	private float groundHeight;
 
 	public UFO(World world) {
@@ -57,8 +57,8 @@ public class UFO extends GameObj {
 			moveY(moveSpeed);
 		}
 
-		moveX(-MathUtils.clamp(Gdx.input.getAccelerometerX(), -1, 1));
-		moveY(-MathUtils.clamp(Gdx.input.getAccelerometerY(), -1, 1));
+		moveX(-MathUtils.clamp(Gdx.input.getAccelerometerX(), -moveSpeed, moveSpeed));
+		moveY(-MathUtils.clamp(Gdx.input.getAccelerometerY(), -moveSpeed, moveSpeed));
 	}
 
 	public void draw(SpriteBatch batch) {
@@ -70,14 +70,14 @@ public class UFO extends GameObj {
 		for (int i = len; --i >= 0;) {
 			item = particles.get(i);
 			item.update();
-//			item.draw(batch);
+			item.draw(batch);
 			if (item.getDead()) {
 				particles.removeIndex(i);
 				particlePool.free(item);
 			}
 		}
 
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isTouched()) {
 			raySprite.setSize(30, (body.getPosition().y - groundHeight) * 10);
 			raySprite.setOrigin(15, (body.getPosition().y - groundHeight) * 10);
 			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_DST_ALPHA);

@@ -17,6 +17,7 @@ import com.dvdfu.ufo.objects.GameObj;
 import com.dvdfu.ufo.objects.Tree;
 import com.dvdfu.ufo.objects.UFO;
 import com.dvdfu.ufo.objects.vehicles.Tractor;
+import com.dvdfu.ufo.objects.vehicles.Truck;
 
 public class GroundScreen extends AbstractScreen {
 	private SpriteBatch batch;
@@ -43,14 +44,17 @@ public class GroundScreen extends AbstractScreen {
 		
 		for (int i = 0; i < 30; i++) {
 			Tree t = new Tree(world);
-			t.setPosition((i + 2) * 5, floor.getMap()[(i + 2) * 5]);
+			t.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10));
 			t.attach(floor.getBody());
 			objects.add(t);
-			Tractor truck = new Tractor(world);
-			truck.setPosition((i + 2) * 5, floor.getMap()[(i + 2) * 5] + 3);
-			objects.add(truck);
+//			Truck truck = new Truck(world);
+//			truck.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10) + 3);
+//			objects.add(truck);
+			Tractor tractor = new Tractor(world);
+			tractor.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10) + 6);
+			objects.add(tractor);
 			Cow cow = new Cow(world);
-			cow.setPosition((i + 2) * 5, floor.getMap()[(i + 2) * 5] + 6);
+			cow.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10) + 9);
 			objects.add(cow);
 		}
 	}
@@ -62,7 +66,7 @@ public class GroundScreen extends AbstractScreen {
 		world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
 		player.update();
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isTouched()) {
 			player.setGroundHeight(floor.getHeight(player.getBody().getPosition().x));
 			for (GameObj b : objects) {
 				b.update();
