@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -19,7 +20,8 @@ import com.dvdfu.ufo.components.SpriteComponent;
 import com.dvdfu.ufo.objects.particles.Sparkle;
 
 public class UFO extends GameObj {
-	private SpriteComponent sprite;
+	private SpriteComponent bodySpr;
+	private SpriteComponent headSpr;
 	private SpriteComponent raySprite;
 	private ShaderComponent rayShader;
 	private ShaderComponent defShader;
@@ -30,7 +32,9 @@ public class UFO extends GameObj {
 
 	public UFO(World world) {
 		super(world);
-		sprite = new SpriteComponent(Const.atlas.findRegion("default"), 4);
+		bodySpr = new SpriteComponent(Const.atlas.findRegion("ufobody"), 96);
+		headSpr = new SpriteComponent(Const.atlas.findRegion("ufohead"), 36);
+//		headSpr.setSize(40, 36);
 		raySprite = new SpriteComponent(Const.atlas.findRegion("ray2"), 160);
 		raySprite.setColor(0.5f, 0.75f, 1);
 		rayShader = new ShaderComponent("shaders/ray.vsh", "shaders/ray.fsh");
@@ -88,10 +92,10 @@ public class UFO extends GameObj {
 			batch.setShader(defShader);
 			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		}
-		sprite.setSize(60, 12);
-		sprite.setOrigin(30, 6);
-		sprite.setAngle(body.getAngle());
-		sprite.drawCentered(batch, body.getWorldCenter().x * 10, body.getWorldCenter().y * 10);
+		bodySpr.setOrigin(48, 9);
+		bodySpr.setAngle(body.getAngle());
+		headSpr.drawCentered(batch, body.getWorldCenter().x * 10, body.getWorldCenter().y * 10 + 6);
+		bodySpr.drawCentered(batch, body.getWorldCenter().x * 10, body.getWorldCenter().y * 10 - 4);
 	}
 
 	public void buildBody() {
@@ -100,18 +104,29 @@ public class UFO extends GameObj {
 		ufoDef.linearDamping = 1;
 		ufoDef.fixedRotation = true;
 		ufoDef.gravityScale = 0;
+		body = world.createBody(ufoDef);
 
 		PolygonShape ufoShape = new PolygonShape();
-		ufoShape.setAsBox(3, 0.6f);
-
-		body = world.createBody(ufoDef);
 		FixtureDef ufoFix = new FixtureDef();
+		
+		ufoShape.setAsBox(4.8f, 0.4f);
 		ufoFix.shape = ufoShape;
-		ufoFix.density = 10;
+		ufoFix.density = 3;
 		ufoFix.friction = 0.9f;
+		body.createFixture(ufoFix);
+		
+		ufoShape.setAsBox(3.8f, 0.7f);
+		ufoFix.shape = ufoShape;
+		body.createFixture(ufoFix);
+		
+		CircleShape domeShape = new CircleShape();
+		domeShape.setRadius(1.8f);
+		domeShape.setPosition(new Vector2(0, 0.9f));
+		ufoFix.shape = domeShape;
 		body.createFixture(ufoFix);
 
 		ufoShape.dispose();
+		domeShape.dispose();
 	}
 
 	public void moveX(float speed) {

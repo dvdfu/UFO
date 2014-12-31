@@ -52,7 +52,7 @@ public class GroundScreen extends AbstractScreen {
 			t.attach(floor.getBody());
 			objects.add(t);
 			Tractor tractor = new Tractor(world);
-			tractor.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10) + 6);
+			tractor.setPosition((i + 2) * 10 + 3, floor.getHeight((i + 2) * 10 + 3));
 			objects.add(tractor);
 			Cow cow = new Cow(world);
 			cow.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10) + 9);
@@ -78,18 +78,18 @@ public class GroundScreen extends AbstractScreen {
 				Vector2 diff = player.getBody().getWorldCenter().cpy().sub(b.getBody().getWorldCenter());
 				if (diff.y > 0) {
 					float distance = Math.abs(diff.x);
-					diff.scl(800f / diff.len());
+					diff.scl(400f / diff.len());
 					if (distance < 3) { // inside abduction ray
 						b.getBody().setLinearVelocity(b.getBody().getLinearVelocity().scl(0.5f));
 						// b.getBody().setLinearVelocity(0, 0);
-						b.getBody().applyForce(new Vector2(diff.x * 5, diff.y), b.getBody().getWorldCenter(), true);
+						b.getBody().applyForce(new Vector2(diff.x * 40, diff.y), b.getBody().getWorldCenter(), true);
 					} else if (distance < 20) {
 						b.getBody().applyForce(new Vector2(diff.x / 5, 0), b.getBody().getWorldCenter(), true);
 					}
 				}
 			}
 		}
-		
+
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
 			camera.zoom /= 1.05f;
 		}
