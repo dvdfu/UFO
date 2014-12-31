@@ -25,13 +25,13 @@ public class UFO extends GameObj {
 	private ShaderComponent defShader;
 	private Pool<Sparkle> particlePool;
 	private final Array<Sparkle> particles = new Array<Sparkle>();
-	private final float moveSpeed = 20;
+	private final float moveSpeed = 2000;
 	private float groundHeight;
 
 	public UFO(World world) {
 		super(world);
 		sprite = new SpriteComponent(Const.atlas.findRegion("default"), 4);
-		raySprite = new SpriteComponent(Const.atlas.findRegion("ray"), 160);
+		raySprite = new SpriteComponent(Const.atlas.findRegion("ray2"), 160);
 		raySprite.setColor(0.5f, 0.75f, 1);
 		rayShader = new ShaderComponent("shaders/ray.vsh", "shaders/ray.fsh");
 		defShader = new ShaderComponent("shaders/passthrough.vsh", "shaders/passthrough.fsh");
@@ -63,21 +63,23 @@ public class UFO extends GameObj {
 
 	public void draw(SpriteBatch batch) {
 		Sparkle s = particlePool.obtain();
-		s.setPosition(body.getPosition().x * 10 + MathUtils.random(-30, 30), body.getPosition().y * 10 + MathUtils.random(-6, 6));
+		// s.setPosition(body.getPosition().x * 10 + MathUtils.random(-30, 30),
+		// body.getPosition().y * 10 + MathUtils.random(-6, 6));
+		s.setPosition(body.getPosition().x * 10, groundHeight * 10);
 		particles.add(s);
 		Sparkle item;
 		int len = particles.size;
 		for (int i = len; --i >= 0;) {
 			item = particles.get(i);
-			item.update();
-			item.draw(batch);
+			// item.update();
+			// item.draw(batch);
 			if (item.getDead()) {
 				particles.removeIndex(i);
 				particlePool.free(item);
 			}
 		}
 
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isTouched()) {
+		if (isAbducting()) {
 			raySprite.setSize(30, (body.getPosition().y - groundHeight) * 10);
 			raySprite.setOrigin(15, (body.getPosition().y - groundHeight) * 10);
 			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_DST_ALPHA);
@@ -95,7 +97,7 @@ public class UFO extends GameObj {
 	public void buildBody() {
 		BodyDef ufoDef = new BodyDef();
 		ufoDef.type = BodyType.DynamicBody;
-		ufoDef.linearDamping = 0.1f;
+		ufoDef.linearDamping = 1;
 		ufoDef.fixedRotation = true;
 		ufoDef.gravityScale = 0;
 
@@ -113,14 +115,18 @@ public class UFO extends GameObj {
 	}
 
 	public void moveX(float speed) {
-		body.applyLinearImpulse(new Vector2(speed, 0), body.getLocalCenter(), true);
+		body.applyForceToCenter(new Vector2(speed, 0), true);
 	}
 
 	public void moveY(float speed) {
-		body.applyLinearImpulse(new Vector2(0, speed), body.getLocalCenter(), true);
+		body.applyForceToCenter(new Vector2(0, speed), true);
 	}
-	
+
 	public void setGroundHeight(float height) {
 		groundHeight = height;
+	}
+
+	public boolean isAbducting() {
+		return Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isTouched();
 	}
 }

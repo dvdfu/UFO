@@ -18,6 +18,7 @@ import com.dvdfu.ufo.objects.GameObj;
 import com.dvdfu.ufo.objects.Tree;
 import com.dvdfu.ufo.objects.UFO;
 import com.dvdfu.ufo.objects.vehicles.Tractor;
+import com.dvdfu.ufo.objects.vehicles.Truck;
 
 public class GroundScreen extends AbstractScreen {
 	private SpriteBatch batch;
@@ -33,10 +34,10 @@ public class GroundScreen extends AbstractScreen {
 		super(game);
 		Const c = new Const();
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight());
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		debugRenderer = new Box2DDebugRenderer();
 		debugRenderer.setDrawJoints(false);
+		debugRenderer.setDrawVelocities(true);
 		world = new World(new Vector2(0, -50), true);
 		floor = new Terrain(world);
 		player = new UFO(world);
@@ -50,10 +51,6 @@ public class GroundScreen extends AbstractScreen {
 			t.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10));
 			t.attach(floor.getBody());
 			objects.add(t);
-			// Truck truck = new Truck(world);
-			// truck.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10) +
-			// 3);
-			// objects.add(truck);
 			Tractor tractor = new Tractor(world);
 			tractor.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10) + 6);
 			objects.add(tractor);
@@ -61,26 +58,43 @@ public class GroundScreen extends AbstractScreen {
 			cow.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10) + 9);
 			objects.add(cow);
 		}
+		Truck truck = new Truck(world);
+		truck.setPosition(10 * 10, floor.getHeight(10 * 10) + 3);
+		objects.add(truck);
 	}
 
 	public void render(float delta) {
-		camera.position.set((int) (player.getBody().getWorldCenter().x * 10),
-				(int) ((player.getBody().getWorldCenter().y - 5) * 10), 0);
+		camera.position.set(player.getBody().getWorldCenter().x * 10, (player.getBody().getWorldCenter().y - 5) * 10, 0);
 		camera.update();
 		world.step(Gdx.graphics.getDeltaTime(), 6, 2);
 
 		player.update();
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isTouched()) {
-			player.setGroundHeight(floor.getHeight(player.getBody()
-					.getPosition().x));
+		player.setGroundHeight(floor.getHeight(player.getBody().getPosition().x));
+		for (GameObj b : objects) {
+			b.update();
+		}
+		if (player.isAbducting()) {
 			for (GameObj b : objects) {
-				b.update();
-				Vector2 diff = player.getBody().getWorldCenter().cpy()
-						.sub(b.getBody().getWorldCenter());
-				diff.scl(150f / diff.len());
-				b.getBody()
-						.applyForce(diff, b.getBody().getWorldCenter(), true);
+				Vector2 diff = player.getBody().getWorldCenter().cpy().sub(b.getBody().getWorldCenter());
+				if (diff.y > 0) {
+					float distance = Math.abs(diff.x);
+					diff.scl(800f / diff.len());
+					if (distance < 3) { // inside abduction ray
+						b.getBody().setLinearVelocity(b.getBody().getLinearVelocity().scl(0.5f));
+						// b.getBody().setLinearVelocity(0, 0);
+						b.getBody().applyForce(new Vector2(diff.x * 5, diff.y), b.getBody().getWorldCenter(), true);
+					} else if (distance < 20) {
+						b.getBody().applyForce(new Vector2(diff.x / 5, 0), b.getBody().getWorldCenter(), true);
+					}
+				}
 			}
+		}
+		
+		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+			camera.zoom /= 1.05f;
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+			camera.zoom *= 1.05f;
 		}
 
 		batch.setProjectionMatrix(camera.combined);
@@ -90,32 +104,23 @@ public class GroundScreen extends AbstractScreen {
 			b.draw(batch);
 		}
 		player.draw(batch);
-		batch.flush();
-		// camera.position.set(0, 0, 0);
-		// camera.update();
-		// batch.setProjectionMatrix(camera.combined);
-		sprite.draw(batch, 0, 0);
+		// batch.flush();
+		// sprite.draw(batch, 0, 0);
 		batch.end();
 		// camera.combined.scale(10, 10, 0);
 		// debugRenderer.render(world, camera.combined);
 	}
 
-	public void resize(int width, int height) {
-	}
+	public void resize(int width, int height) {}
 
-	public void show() {
-	}
+	public void show() {}
 
-	public void hide() {
-	}
+	public void hide() {}
 
-	public void pause() {
-	}
+	public void pause() {}
 
-	public void resume() {
-	}
+	public void resume() {}
 
-	public void dispose() {
-	}
+	public void dispose() {}
 
 }

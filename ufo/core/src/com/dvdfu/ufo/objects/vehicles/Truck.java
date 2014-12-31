@@ -97,5 +97,7 @@ public class Truck extends GameObj {
 
 	public void setPosition(float x, float y) {
 		super.setPosition(x, y);
+		wheel1.setTransform(x, y, 0);
+		wheel2.setTransform(x, y, 0);
 	}
 }

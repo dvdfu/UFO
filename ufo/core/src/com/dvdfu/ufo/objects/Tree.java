@@ -16,9 +16,9 @@ import com.dvdfu.ufo.components.ImageComponent;
 import com.dvdfu.ufo.components.SpriteComponent;
 
 public class Tree extends GameObj {
+	private final float height = 2.5f, width = 0.5f, radius = 1.5f;
 	private RevoluteJoint root;
 	private RevoluteJointDef rootDef;
-	private float width, height;
 	private SpriteComponent leafSpr;
 	private SpriteComponent trunkSpr;
 	private boolean detached;
@@ -26,7 +26,6 @@ public class Tree extends GameObj {
 	public Tree(World world) {
 		super(world);
 		leafSpr = new SpriteComponent(new ImageComponent(Const.atlas.findRegion("leaves"), 32));
-//		leafSpr.setColor(1, MathUtils.random(0.8f, 1), MathUtils.random(0.6f, 1));
 		trunkSpr = new SpriteComponent(new ImageComponent(Const.atlas.findRegion("trunk"), 4));
 	}
 
@@ -54,10 +53,6 @@ public class Tree extends GameObj {
 	public void buildBody() {
 		BodyDef treeDef = new BodyDef();
 		treeDef.type = BodyType.DynamicBody;
-		
-		width = 0.5f + MathUtils.random(0.2f);
-		height = 3 + MathUtils.random(-1f, 0); 
-		float radius = 1.5f + MathUtils.random(0.25f);
 
 		PolygonShape trunkShape = new PolygonShape();
 		trunkShape.setAsBox(width / 2, height / 2, new Vector2(0, height / 2), 0);

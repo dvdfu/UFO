@@ -13,7 +13,7 @@ import com.dvdfu.ufo.objects.GameObj;
 public class Terrain extends GameObj {
 	private SpriteComponent sprite;
 	private final int nodes = 40;
-	private final int res = 2;
+	private final int res = 4;
 	private final float var = 4;
 	private float[] nodeMap;
 	private float[] map;
@@ -83,17 +83,13 @@ public class Terrain extends GameObj {
 		return map;
 	}
 
-	public void update() {
-	}
+	public void update() {}
 
 	public void draw(SpriteBatch batch) {
 		for (int i = 0; i < map.length - 1; i++) {
 			for (int j = 0; j < 100 / res + 1; j++) {
 				sprite.setSize(1, (var + 50) * 10);
-				sprite.draw(
-						batch,
-						i * 100 / res + j,
-						(interLin(map[i], map[i + 1], j * res / 100f) - var - 50) * 10);
+				sprite.draw(batch, i * 100 / res + j, (interLin(map[i], map[i + 1], j * res / 100f) - var - 50) * 10);
 			}
 		}
 	}
@@ -110,10 +106,8 @@ public class Terrain extends GameObj {
 		for (int i = 0; i < map.length - 1; i++) {
 			vertices[0] = new Vector2(i * 10f / res, map[i]);
 			vertices[1] = new Vector2((i + 1) * 10f / res, map[i + 1]);
-			vertices[2] = new Vector2(i * 10f / res, Math.min(map[i],
-					map[i + 1]) - var);
-			vertices[3] = new Vector2((i + 1) * 10f / res, Math.min(map[i],
-					map[i + 1]) - var);
+			vertices[2] = new Vector2(i * 10f / res, map[i] - var - 50);
+			vertices[3] = new Vector2((i + 1) * 10f / res, map[i + 1] - var - 50);
 			bodyShape.set(vertices);
 			body = world.createBody(bodyDef);
 			body.createFixture(bodyShape, 1);
