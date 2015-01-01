@@ -20,6 +20,10 @@ public abstract class GameObj {
 
 	public abstract void buildBody();
 	
+	public void collide(GameObj object) {}
+	
+	public void uncollide(GameObj object) {}
+	
 	public void setPosition(Vector2 position) {
 		body.setTransform(position, 0);
 	}

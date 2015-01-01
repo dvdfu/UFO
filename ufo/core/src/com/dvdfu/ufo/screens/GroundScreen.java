@@ -15,6 +15,7 @@ import com.dvdfu.ufo.MainGame;
 import com.dvdfu.ufo.Terrain;
 import com.dvdfu.ufo.components.GUIComponent;
 import com.dvdfu.ufo.components.ShaderComponent;
+import com.dvdfu.ufo.objects.Abductable;
 import com.dvdfu.ufo.objects.Cow;
 import com.dvdfu.ufo.objects.GameObj;
 import com.dvdfu.ufo.objects.Tree;
@@ -64,9 +65,9 @@ public class GroundScreen extends AbstractScreen {
 			cow.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10) + 9);
 			objects.add(cow);
 		}
-		Truck truck = new Truck(world);
-		truck.setPosition(10 * 10, floor.getHeight(10 * 10) + 3);
-		objects.add(truck);
+//		Truck truck = new Truck(world);
+//		truck.setPosition(10 * 10, floor.getHeight(10 * 10) + 3);
+//		objects.add(truck);
 	}
 
 	public void render(float delta) {
@@ -80,28 +81,26 @@ public class GroundScreen extends AbstractScreen {
 		for (GameObj b : objects) {
 			b.update();
 		}
+		
 		if (player.isAbducting()) {
-			for (GameObj b : objects) {
+			for (int i = 0; i < objects.size(); i++) {
+				GameObj b = objects.get(i);
 				Vector2 diff = player.getBody().getWorldCenter().cpy().sub(b.getBody().getWorldCenter());
 				if (diff.y > 0) {
 					float distance = Math.abs(diff.x);
 					diff.scl(400f / diff.len());
 					if (distance < 3) { // inside abduction ray
 						b.getBody().setLinearVelocity(b.getBody().getLinearVelocity().scl(0.5f));
-						// b.getBody().setLinearVelocity(0, 0);
 						b.getBody().applyForce(new Vector2(diff.x * 40, diff.y), b.getBody().getWorldCenter(), true);
+						if (((Abductable) b).getUFOCollide()) {
+							world.destroyBody(objects.get(i).getBody());
+							objects.remove(i);
+							i--;
+						}
 					} else if (distance < 8) {
 						b.getBody().applyForce(new Vector2(diff.x / 5, 0), b.getBody().getWorldCenter(), true);
 					}
 				}
-			}
-		}
-		
-		for (int i = 0; i < objects.size(); i++) {
-			if (objects.get(i).getBody().getUserData() != null && objects.get(i).getBody().getUserData().equals("dead")) {
-				world.destroyBody(objects.get(i).getBody());
-				objects.remove(i);
-				i--;
 			}
 		}
 
@@ -122,8 +121,8 @@ public class GroundScreen extends AbstractScreen {
 		// batch.flush();
 		// sprite.draw(batch, 0, 0);
 		batch.end();
-//		 camera.combined.scale(10, 10, 0);
-//		 debugRenderer.render(world, camera.combined);
+		// camera.combined.scale(10, 10, 0);
+		// debugRenderer.render(world, camera.combined);
 	}
 
 	public void resize(int width, int height) {}

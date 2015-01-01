@@ -11,9 +11,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.dvdfu.ufo.Const;
 import com.dvdfu.ufo.components.SpriteComponent;
-import com.dvdfu.ufo.objects.GameObj;
+import com.dvdfu.ufo.objects.Abductable;
 
-public class Truck extends GameObj {
+public class Truck extends Abductable {
 	private Body wheel1;
 	private Body wheel2;
 	private SpriteComponent wheel;
@@ -32,7 +32,7 @@ public class Truck extends GameObj {
 		truckHead = new SpriteComponent(Const.atlas.findRegion("truckhead"), 20);
 		truckHead.setSize(headW * 10, headH * 10);
 		truckHead.setOrigin(headW * 5, headH * 5);
-//		truckHead.setColor(1, 0.9f, 0.6f);
+		// truckHead.setColor(1, 0.9f, 0.6f);
 		p = new Vector2();
 	}
 
@@ -57,7 +57,7 @@ public class Truck extends GameObj {
 
 		BodyDef cabinDef = new BodyDef();
 		cabinDef.type = BodyType.DynamicBody;
-		
+
 		BodyDef wheelDef = new BodyDef();
 		wheelDef.type = BodyType.DynamicBody;
 
@@ -66,14 +66,14 @@ public class Truck extends GameObj {
 
 		PolygonShape cabinShape = new PolygonShape();
 		cabinShape.setAsBox(headW / 2, headH / 2, new Vector2(headW / 2, headH / 2), 0);
-		
+
 		CircleShape wheelShape = new CircleShape();
 		wheelShape.setRadius(wheelR);
 
 		body = world.createBody(truckDef);
-		body.createFixture(trunkShape, 1f);
-		body.createFixture(cabinShape, 1f);
-		
+		body.createFixture(trunkShape, 1f).setUserData(this);
+		body.createFixture(cabinShape, 1f).setUserData(this);
+
 		wheel1 = world.createBody(wheelDef);
 		wheel1.createFixture(wheelShape, 0.5f);
 

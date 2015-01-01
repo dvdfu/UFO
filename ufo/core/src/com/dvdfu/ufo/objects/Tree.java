@@ -15,7 +15,7 @@ import com.dvdfu.ufo.Const;
 import com.dvdfu.ufo.components.ImageComponent;
 import com.dvdfu.ufo.components.SpriteComponent;
 
-public class Tree extends GameObj {
+public class Tree extends Abductable {
 	private final float height = 2.5f, width = 0.5f, radius = 1.5f;
 	private RevoluteJoint root;
 	private RevoluteJointDef rootDef;
@@ -61,8 +61,8 @@ public class Tree extends GameObj {
 		leafShape.setPosition(new Vector2(0, height));
 
 		body = world.createBody(treeDef);
-		body.createFixture(trunkShape, 1);
-		body.createFixture(leafShape, 0.1f);
+		body.createFixture(trunkShape, 1).setUserData(this);
+		body.createFixture(leafShape, 0.1f).setUserData(this);
 
 		trunkShape.dispose();
 		leafShape.dispose();

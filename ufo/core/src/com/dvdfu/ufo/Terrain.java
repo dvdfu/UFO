@@ -120,4 +120,6 @@ public class Terrain extends GameObj {
 		int realX = MathUtils.clamp((int) x, 0, nodes * res - 1);
 		return interLin(map[realX], map[realX + 1], x % 1);
 	}
+
+	public void collide(GameObj object) {}
 }

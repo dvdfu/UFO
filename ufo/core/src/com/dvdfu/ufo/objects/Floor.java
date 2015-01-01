@@ -50,4 +50,6 @@ public class Floor extends GameObj {
 
 		floorShape.dispose();
 	}
+
+	public void collide(GameObj object) {}
 }

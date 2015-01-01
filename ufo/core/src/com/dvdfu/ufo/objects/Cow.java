@@ -11,17 +11,16 @@ import com.dvdfu.ufo.Const;
 import com.dvdfu.ufo.components.ImageComponent;
 import com.dvdfu.ufo.components.SpriteComponent;
 
-public class Cow extends GameObj {
+public class Cow extends Abductable {
 	private SpriteComponent sprite;
-	
+
 	public Cow(World world) {
 		super(world);
 		sprite = new SpriteComponent(new ImageComponent(Const.atlas.findRegion("cow"), 14));
 	}
 
-	public void update() {
-	}
-	
+	public void update() {}
+
 	public void draw(SpriteBatch batch) {
 		sprite.setSize(15, 10);
 		sprite.setOrigin(7.5f, 5);
@@ -39,7 +38,7 @@ public class Cow extends GameObj {
 		cowFix.shape = cowShape;
 		cowFix.density = 1;
 		cowFix.restitution = 0;
-		body.createFixture(cowFix);
+		body.createFixture(cowFix).setUserData(this);
 		cowShape.dispose();
 	}
 }

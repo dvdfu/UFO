@@ -34,7 +34,7 @@ public class UFO extends GameObj {
 		super(world);
 		bodySpr = new SpriteComponent(Const.atlas.findRegion("ufobody"), 96);
 		headSpr = new SpriteComponent(Const.atlas.findRegion("ufohead"), 36);
-//		headSpr.setSize(40, 36);
+		// headSpr.setSize(40, 36);
 		raySprite = new SpriteComponent(Const.atlas.findRegion("ray2"), 160);
 		raySprite.setColor(0.5f, 0.75f, 1);
 		rayShader = new ShaderComponent("shaders/ray.vsh", "shaders/ray.fsh");
@@ -75,8 +75,8 @@ public class UFO extends GameObj {
 		int len = particles.size;
 		for (int i = len; --i >= 0;) {
 			item = particles.get(i);
-//			item.update();
-//			item.draw(batch);
+			// item.update();
+			// item.draw(batch);
 			if (item.getDead()) {
 				particles.removeIndex(i);
 				particlePool.free(item);
@@ -108,31 +108,33 @@ public class UFO extends GameObj {
 
 		PolygonShape ufoShape = new PolygonShape();
 		FixtureDef ufoFix = new FixtureDef();
-		
+
 		ufoShape.setAsBox(4.8f, 0.4f);
 		ufoFix.shape = ufoShape;
 		ufoFix.density = 3;
 		ufoFix.friction = 0.9f;
 		body.createFixture(ufoFix);
-		
+
 		ufoShape.setAsBox(3.8f, 0.7f);
 		ufoFix.shape = ufoShape;
 		body.createFixture(ufoFix);
-		
+
 		CircleShape domeShape = new CircleShape();
 		domeShape.setRadius(1.8f);
 		domeShape.setPosition(new Vector2(0, 0.9f));
 		ufoFix.shape = domeShape;
 		body.createFixture(ufoFix);
-		
+
 		ufoShape.setAsBox(1.5f, 0.2f, new Vector2(0, -1.2f), 0);
 		ufoFix.shape = ufoShape;
 		ufoFix.isSensor = true;
-		body.createFixture(ufoFix).setUserData("ray");
+		body.createFixture(ufoFix).setUserData(this);
 
 		ufoShape.dispose();
 		domeShape.dispose();
 	}
+	
+	public void collide(GameObj object) {}
 
 	public void moveX(float speed) {
 		body.applyForceToCenter(new Vector2(speed, 0), true);

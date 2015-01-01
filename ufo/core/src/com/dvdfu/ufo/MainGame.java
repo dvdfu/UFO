@@ -46,11 +46,10 @@ public class MainGame extends Game {
 		setScreen(screens.peek());
 	}
 
-	public void dispose() {
-	}
+	public void dispose() {}
 
 	public void render() {
-		// framerate.log();
+		framerate.log();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(0.7f, 0.9f, 1, 1);
 		if (getScreen() != null) {
@@ -62,9 +61,7 @@ public class MainGame extends Game {
 		super.resize(width, height);
 	}
 
-	public void pause() {
-	}
+	public void pause() {}
 
-	public void resume() {
-	}
+	public void resume() {}
 }

@@ -11,17 +11,16 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.dvdfu.ufo.Const;
 import com.dvdfu.ufo.components.SpriteComponent;
-import com.dvdfu.ufo.objects.GameObj;
+import com.dvdfu.ufo.objects.Abductable;
 
-public class Tractor extends GameObj {
+public class Tractor extends Abductable {
 	private Body wheel1;
 	private Body wheel2;
 	private SpriteComponent wheel;
 	private SpriteComponent truckBody;
 	private SpriteComponent truckHead;
 	private Vector2 p;
-	private final float bodyW = 1.2f, bodyH = 1.6f, headW = 1.2f, headH = 0.9f,
-			wheel1R = 0.5f, wheel1X = -0.9f, wheel2R = 0.4f, wheel2X = 0.9f;
+	private final float bodyW = 1.2f, bodyH = 1.6f, headW = 1.2f, headH = 0.9f, wheel1R = 0.5f, wheel1X = -0.9f, wheel2R = 0.4f, wheel2X = 0.9f;
 
 	public Tractor(World world) {
 		super(world);
@@ -36,8 +35,7 @@ public class Tractor extends GameObj {
 		p = new Vector2();
 	}
 
-	public void update() {
-	}
+	public void update() {}
 
 	public void draw(SpriteBatch batch) {
 		p.set(body.getWorldPoint(new Vector2(-bodyW / 2, bodyH / 2)));
@@ -65,19 +63,17 @@ public class Tractor extends GameObj {
 		wheelDef.type = BodyType.DynamicBody;
 
 		PolygonShape trunkShape = new PolygonShape();
-		trunkShape.setAsBox(bodyW / 2, bodyH / 2, new Vector2(-bodyW / 2,
-				bodyH / 2), 0);
+		trunkShape.setAsBox(bodyW / 2, bodyH / 2, new Vector2(-bodyW / 2, bodyH / 2), 0);
 
 		PolygonShape cabinShape = new PolygonShape();
-		cabinShape.setAsBox(headW / 2, headH / 2, new Vector2(headW / 2,
-				headH / 2), 0);
+		cabinShape.setAsBox(headW / 2, headH / 2, new Vector2(headW / 2, headH / 2), 0);
 
 		CircleShape wheelShape = new CircleShape();
 		wheelShape.setRadius(wheel1R);
 
 		body = world.createBody(truckDef);
-		body.createFixture(trunkShape, 1f);
-		body.createFixture(cabinShape, 1f);
+		body.createFixture(trunkShape, 1f).setUserData(this);
+		body.createFixture(cabinShape, 1f).setUserData(this);
 
 		wheel1 = world.createBody(wheelDef);
 		wheel1.createFixture(wheelShape, 0.5f);
