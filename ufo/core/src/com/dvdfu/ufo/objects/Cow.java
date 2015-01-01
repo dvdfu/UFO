@@ -41,4 +41,8 @@ public class Cow extends Abductable {
 		body.createFixture(cowFix).setUserData(this);
 		cowShape.dispose();
 	}
+
+	public void abduct() {
+		world.destroyBody(body);
+	}
 }

@@ -95,6 +95,12 @@ public class Truck extends Abductable {
 		world.createJoint(jointDef);
 	}
 
+	public void abduct() {
+		world.destroyBody(body);
+		world.destroyBody(wheel1);
+		world.destroyBody(wheel2);
+	}
+
 	public void setPosition(float x, float y) {
 		super.setPosition(x, y);
 		wheel1.setTransform(x, y, 0);

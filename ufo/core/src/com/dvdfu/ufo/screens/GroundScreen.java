@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 import com.dvdfu.ufo.Const;
 import com.dvdfu.ufo.Contacter;
 import com.dvdfu.ufo.MainGame;
@@ -20,6 +22,7 @@ import com.dvdfu.ufo.objects.Cow;
 import com.dvdfu.ufo.objects.GameObj;
 import com.dvdfu.ufo.objects.Tree;
 import com.dvdfu.ufo.objects.UFO;
+import com.dvdfu.ufo.objects.particles.Sparkle;
 import com.dvdfu.ufo.objects.vehicles.Tractor;
 import com.dvdfu.ufo.objects.vehicles.Truck;
 
@@ -33,6 +36,8 @@ public class GroundScreen extends AbstractScreen {
 	private UFO player;
 	private GUIComponent sprite;
 	private ShaderComponent shader;
+	private Pool<Sparkle> particlePool;
+	private final Array<Sparkle> particles = new Array<Sparkle>();
 
 	public GroundScreen(MainGame game) {
 		super(game);
@@ -52,7 +57,7 @@ public class GroundScreen extends AbstractScreen {
 		sprite.setCamera();
 		shader = new ShaderComponent("shaders/passthrough.vsh", "shaders/passthrough.fsh");
 		batch.setShader(shader);
-		
+
 		for (int i = 0; i < 30; i++) {
 			Tree t = new Tree(world);
 			t.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10));
@@ -65,13 +70,20 @@ public class GroundScreen extends AbstractScreen {
 			cow.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10) + 9);
 			objects.add(cow);
 		}
-//		Truck truck = new Truck(world);
-//		truck.setPosition(10 * 10, floor.getHeight(10 * 10) + 3);
-//		objects.add(truck);
+		 Truck truck = new Truck(world);
+		 truck.setPosition(10 * 10, floor.getHeight(10 * 10) + 3);
+		 objects.add(truck);
+
+		particlePool = new Pool<Sparkle>() {
+			protected Sparkle newObject() {
+				return new Sparkle();
+			}
+		};
+
 	}
 
 	public void render(float delta) {
-		
+
 		camera.position.set(player.getBody().getWorldCenter().x * 10, (player.getBody().getWorldCenter().y - 5) * 10, 0);
 		camera.update();
 		world.step(Gdx.graphics.getDeltaTime(), 6, 2);
@@ -81,7 +93,7 @@ public class GroundScreen extends AbstractScreen {
 		for (GameObj b : objects) {
 			b.update();
 		}
-		
+
 		if (player.isAbducting()) {
 			for (int i = 0; i < objects.size(); i++) {
 				GameObj b = objects.get(i);
@@ -93,7 +105,12 @@ public class GroundScreen extends AbstractScreen {
 						b.getBody().setLinearVelocity(b.getBody().getLinearVelocity().scl(0.5f));
 						b.getBody().applyForce(new Vector2(diff.x * 40, diff.y), b.getBody().getWorldCenter(), true);
 						if (((Abductable) b).getUFOCollide()) {
-							world.destroyBody(objects.get(i).getBody());
+							for (int j = 0; j < b.getBody().getMass(); j++) {
+								Sparkle s = particlePool.obtain();
+								s.setPosition(b.getBody().getWorldCenter().cpy().scl(10));
+								particles.add(s);
+							}
+							((Abductable) b).abduct();
 							objects.remove(i);
 							i--;
 						}
@@ -111,11 +128,25 @@ public class GroundScreen extends AbstractScreen {
 			camera.zoom *= 1.01f;
 		}
 
+		Sparkle item;
+		int len = particles.size;
+		for (int i = len; --i >= 0;) {
+			item = particles.get(i);
+			item.update();
+			if (item.getDead()) {
+				particles.removeIndex(i);
+				particlePool.free(item);
+			}
+		}
+
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		floor.draw(batch);
 		for (GameObj b : objects) {
 			b.draw(batch);
+		}
+		for (Sparkle s : particles) {
+			s.draw(batch);
 		}
 		player.draw(batch);
 		// batch.flush();

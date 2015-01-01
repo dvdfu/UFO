@@ -76,6 +76,10 @@ public class Tree extends Abductable {
 		rootDef.enableLimit = true;
 	}
 
+	public void abduct() {
+		world.destroyBody(body);
+	}
+
 	public void attach(Body floor) {
 		rootDef.bodyB = floor;
 		Vector2 worldp = new Vector2(body.getWorldPoint(new Vector2(0, 0)));
