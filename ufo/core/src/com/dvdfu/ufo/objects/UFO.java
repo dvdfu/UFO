@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.dvdfu.ufo.Const;
 import com.dvdfu.ufo.components.ShaderComponent;
 import com.dvdfu.ufo.components.SpriteComponent;
-import com.dvdfu.ufo.objects.particles.Sparkle;
+import com.dvdfu.ufo.objects.particles.UFOTrail;
 
 public class UFO extends GameObj {
 	private SpriteComponent bodySpr;
@@ -25,8 +25,8 @@ public class UFO extends GameObj {
 	private SpriteComponent raySprite;
 	private ShaderComponent rayShader;
 	private ShaderComponent defShader;
-	private Pool<Sparkle> particlePool;
-	private final Array<Sparkle> particles = new Array<Sparkle>();
+	private Pool<UFOTrail> particlePool;
+	private final Array<UFOTrail> particles = new Array<UFOTrail>();
 	private final float moveSpeed = 2000;
 	private float groundHeight;
 
@@ -40,9 +40,9 @@ public class UFO extends GameObj {
 		rayShader = new ShaderComponent("shaders/ray.vsh", "shaders/ray.fsh");
 		defShader = new ShaderComponent("shaders/passthrough.vsh", "shaders/passthrough.fsh");
 
-		particlePool = new Pool<Sparkle>() {
-			protected Sparkle newObject() {
-				return new Sparkle();
+		particlePool = new Pool<UFOTrail>() {
+			protected UFOTrail newObject() {
+				return new UFOTrail();
 			}
 		};
 	}
@@ -66,17 +66,17 @@ public class UFO extends GameObj {
 	}
 
 	public void draw(SpriteBatch batch) {
-		Sparkle s = particlePool.obtain();
+		UFOTrail s = particlePool.obtain();
 		// s.setPosition(body.getPosition().x * 10 + MathUtils.random(-30, 30),
 		// body.getPosition().y * 10 + MathUtils.random(-6, 6));
-		s.setPosition(body.getPosition().x * 10, groundHeight * 10);
+		s.setPosition(body.getPosition().x * 10, body.getPosition().y * 10);
 		particles.add(s);
-		Sparkle item;
+		UFOTrail item;
 		int len = particles.size;
 		for (int i = len; --i >= 0;) {
 			item = particles.get(i);
-			// item.update();
-			// item.draw(batch);
+//			item.update();
+//			item.draw(batch);
 			if (item.getDead()) {
 				particles.removeIndex(i);
 				particlePool.free(item);
@@ -124,6 +124,11 @@ public class UFO extends GameObj {
 		domeShape.setPosition(new Vector2(0, 0.9f));
 		ufoFix.shape = domeShape;
 		body.createFixture(ufoFix);
+		
+		ufoShape.setAsBox(1.5f, 0.2f, new Vector2(0, -1.2f), 0);
+		ufoFix.shape = ufoShape;
+		ufoFix.isSensor = true;
+		body.createFixture(ufoFix).setUserData("ray");
 
 		ufoShape.dispose();
 		domeShape.dispose();

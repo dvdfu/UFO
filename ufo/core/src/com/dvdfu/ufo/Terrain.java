@@ -14,7 +14,7 @@ public class Terrain extends GameObj {
 	private SpriteComponent sprite;
 	private final int nodes = 40;
 	private final int res = 4;
-	private final float var = 2;
+	private final float var = 4;
 	private float[] nodeMap;
 	private float[] map;
 

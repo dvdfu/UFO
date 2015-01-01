@@ -10,9 +10,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.dvdfu.ufo.Const;
+import com.dvdfu.ufo.Contacter;
 import com.dvdfu.ufo.MainGame;
 import com.dvdfu.ufo.Terrain;
 import com.dvdfu.ufo.components.GUIComponent;
+import com.dvdfu.ufo.components.ShaderComponent;
 import com.dvdfu.ufo.objects.Cow;
 import com.dvdfu.ufo.objects.GameObj;
 import com.dvdfu.ufo.objects.Tree;
@@ -29,6 +31,7 @@ public class GroundScreen extends AbstractScreen {
 	private ArrayList<GameObj> objects;
 	private UFO player;
 	private GUIComponent sprite;
+	private ShaderComponent shader;
 
 	public GroundScreen(MainGame game) {
 		super(game);
@@ -39,13 +42,16 @@ public class GroundScreen extends AbstractScreen {
 		debugRenderer.setDrawJoints(false);
 		debugRenderer.setDrawVelocities(true);
 		world = new World(new Vector2(0, -50), true);
+		world.setContactListener(new Contacter());
 		floor = new Terrain(world);
 		player = new UFO(world);
 		objects = new ArrayList<GameObj>();
 		player.setPosition(30, floor.getHeight(30) + 10);
 		sprite = new GUIComponent(Const.atlas.findRegion("default"));
 		sprite.setCamera();
-
+		shader = new ShaderComponent("shaders/passthrough.vsh", "shaders/passthrough.fsh");
+		batch.setShader(shader);
+		
 		for (int i = 0; i < 30; i++) {
 			Tree t = new Tree(world);
 			t.setPosition((i + 2) * 10, floor.getHeight((i + 2) * 10));
@@ -64,6 +70,7 @@ public class GroundScreen extends AbstractScreen {
 	}
 
 	public void render(float delta) {
+		
 		camera.position.set(player.getBody().getWorldCenter().x * 10, (player.getBody().getWorldCenter().y - 5) * 10, 0);
 		camera.update();
 		world.step(Gdx.graphics.getDeltaTime(), 6, 2);
@@ -83,18 +90,26 @@ public class GroundScreen extends AbstractScreen {
 						b.getBody().setLinearVelocity(b.getBody().getLinearVelocity().scl(0.5f));
 						// b.getBody().setLinearVelocity(0, 0);
 						b.getBody().applyForce(new Vector2(diff.x * 40, diff.y), b.getBody().getWorldCenter(), true);
-					} else if (distance < 20) {
+					} else if (distance < 8) {
 						b.getBody().applyForce(new Vector2(diff.x / 5, 0), b.getBody().getWorldCenter(), true);
 					}
 				}
 			}
 		}
+		
+		for (int i = 0; i < objects.size(); i++) {
+			if (objects.get(i).getBody().getUserData() != null && objects.get(i).getBody().getUserData().equals("dead")) {
+				world.destroyBody(objects.get(i).getBody());
+				objects.remove(i);
+				i--;
+			}
+		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			camera.zoom /= 1.05f;
+			camera.zoom /= 1.01f;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			camera.zoom *= 1.05f;
+			camera.zoom *= 1.01f;
 		}
 
 		batch.setProjectionMatrix(camera.combined);
@@ -107,8 +122,8 @@ public class GroundScreen extends AbstractScreen {
 		// batch.flush();
 		// sprite.draw(batch, 0, 0);
 		batch.end();
-		// camera.combined.scale(10, 10, 0);
-		// debugRenderer.render(world, camera.combined);
+//		 camera.combined.scale(10, 10, 0);
+//		 debugRenderer.render(world, camera.combined);
 	}
 
 	public void resize(int width, int height) {}
