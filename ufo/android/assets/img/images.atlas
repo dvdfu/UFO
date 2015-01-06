@@ -19,21 +19,21 @@ cow
   index: -1
 default
   rotate: false
-  xy: 2, 2
-  size: 16, 16
-  orig: 16, 16
+  xy: 36, 41
+  size: 16, 11
+  orig: 16, 11
   offset: 0, 0
   index: -1
 ground
   rotate: false
-  xy: 184, 80
+  xy: 364, 198
   size: 10, 10
   orig: 10, 10
   offset: 0, 0
   index: -1
 hydrant
   rotate: false
-  xy: 364, 198
+  xy: 382, 222
   size: 6, 10
   orig: 6, 10
   offset: 0, 0
@@ -89,7 +89,7 @@ tractorbody
   index: -1
 tractorhead
   rotate: false
-  xy: 36, 36
+  xy: 2, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -143,9 +143,16 @@ ufohead
   orig: 36, 36
   offset: 0, 0
   index: -1
+ufoicon
+  rotate: false
+  xy: 326, 149
+  size: 16, 11
+  orig: 16, 11
+  offset: 0, 0
+  index: -1
 wheel
   rotate: false
-  xy: 326, 148
+  xy: 184, 78
   size: 12, 12
   orig: 12, 12
   offset: 0, 0

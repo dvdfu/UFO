@@ -23,6 +23,7 @@ public class Sparkle extends ParticleComponent {
 		super.update();
 		position.add(velocity);
 		velocity.scl(0.9f);
+		velocity.y -= 0.1f;
 	}
 
 	public void draw(SpriteBatch batch) {

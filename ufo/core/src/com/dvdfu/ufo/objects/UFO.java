@@ -3,7 +3,9 @@ package com.dvdfu.ufo.objects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -12,12 +14,10 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 import com.dvdfu.ufo.Const;
+import com.dvdfu.ufo.components.GUIComponent;
 import com.dvdfu.ufo.components.ShaderComponent;
 import com.dvdfu.ufo.components.SpriteComponent;
-import com.dvdfu.ufo.objects.particles.UFOTrail;
 
 public class UFO extends GameObj {
 	private SpriteComponent bodySpr;
@@ -25,10 +25,12 @@ public class UFO extends GameObj {
 	private SpriteComponent raySprite;
 	private ShaderComponent rayShader;
 	private ShaderComponent defShader;
-	private Pool<UFOTrail> particlePool;
-	private final Array<UFOTrail> particles = new Array<UFOTrail>();
-	private final float moveSpeed = 2000;
+	private final float moveSpeed = 3000;
 	private float groundHeight;
+	private TextureRegion tr;
+	private GUIComponent rayIcon;
+	private GUIComponent ufoIcon;
+	private int rayMeter;
 
 	public UFO(World world) {
 		super(world);
@@ -39,12 +41,13 @@ public class UFO extends GameObj {
 		raySprite.setColor(0.5f, 0.75f, 1);
 		rayShader = new ShaderComponent("shaders/ray.vsh", "shaders/ray.fsh");
 		defShader = new ShaderComponent("shaders/passthrough.vsh", "shaders/passthrough.fsh");
-
-		particlePool = new Pool<UFOTrail>() {
-			protected UFOTrail newObject() {
-				return new UFOTrail();
-			}
-		};
+		tr = new TextureRegion(new Texture(Gdx.files.internal("img/default.png")));
+		rayIcon = new GUIComponent(Const.atlas.findRegion("ray2"));
+		rayIcon.setColor(0.5f, 0.75f, 1);
+		rayIcon.setCamera();
+		ufoIcon = new GUIComponent(Const.atlas.findRegion("ufoicon"));
+		ufoIcon.setCamera();
+		rayMeter = 200;
 	}
 
 	public void update() {
@@ -60,35 +63,37 @@ public class UFO extends GameObj {
 		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
 			moveY(moveSpeed);
 		}
-
-		moveX(-MathUtils.clamp(Gdx.input.getAccelerometerX(), -moveSpeed, moveSpeed));
-		moveY(-MathUtils.clamp(Gdx.input.getAccelerometerY(), -moveSpeed, moveSpeed));
-	}
-
-	public void draw(SpriteBatch batch) {
-		UFOTrail s = particlePool.obtain();
-		// s.setPosition(body.getPosition().x * 10 + MathUtils.random(-30, 30),
-		// body.getPosition().y * 10 + MathUtils.random(-6, 6));
-		s.setPosition(body.getPosition().x * 10, body.getPosition().y * 10);
-		particles.add(s);
-		UFOTrail item;
-		int len = particles.size;
-		for (int i = len; --i >= 0;) {
-			item = particles.get(i);
-			// item.update();
-			// item.draw(batch);
-			if (item.getDead()) {
-				particles.removeIndex(i);
-				particlePool.free(item);
+		
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isTouched()) {
+			if (rayMeter > 0) {
+				rayMeter--;
+			} else {
+				rayMeter = 0;
+			}
+		} else {
+			if (rayMeter + 3 < 200) {
+				rayMeter += 3;
+			} else {
+				rayMeter = 200;
 			}
 		}
 
+		moveX(-MathUtils.clamp(Gdx.input.getAccelerometerX() * 300, -moveSpeed, moveSpeed));
+		moveY(-MathUtils.clamp(Gdx.input.getAccelerometerY() * 300, -moveSpeed, moveSpeed));
+	}
+
+	public void draw(SpriteBatch batch) {
 		if (isAbducting()) {
 			raySprite.setSize(30, (body.getPosition().y - groundHeight) * 10);
 			raySprite.setOrigin(15, (body.getPosition().y - groundHeight) * 10);
 			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_DST_ALPHA);
 			batch.setShader(rayShader);
-			raySprite.drawOrigin(batch, body.getPosition().x * 10, body.getPosition().y * 10);
+			batch.setColor(0.5f, 0.75f, 1, 1);
+			// raySprite.drawOrigin(batch, body.getPosition().x * 10,
+			// body.getPosition().y * 10);
+			batch.draw(tr, body.getPosition().x * 10 - 15, body.getPosition().y * 10 - (body.getPosition().y - groundHeight) * 10, 30,
+					(body.getPosition().y - groundHeight) * 10);
+			batch.setColor(1, 1, 1, 1);
 			batch.setShader(defShader);
 			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		}
@@ -96,6 +101,14 @@ public class UFO extends GameObj {
 		bodySpr.setAngle(body.getAngle());
 		headSpr.drawCentered(batch, body.getWorldCenter().x * 10, body.getWorldCenter().y * 10 + 6);
 		bodySpr.drawCentered(batch, body.getWorldCenter().x * 10, body.getWorldCenter().y * 10 - 4);
+//		batch.flush();
+		
+		rayIcon.setSize(8, rayMeter / 2);
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_DST_ALPHA);
+		rayIcon.draw(batch, 20, 16);
+		batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+		ufoIcon.drawCentered(batch, 24, rayMeter / 2 + 20);
 	}
 
 	public void buildBody() {
@@ -133,7 +146,7 @@ public class UFO extends GameObj {
 		ufoShape.dispose();
 		domeShape.dispose();
 	}
-	
+
 	public void collide(GameObj object) {}
 
 	public void moveX(float speed) {
@@ -149,6 +162,6 @@ public class UFO extends GameObj {
 	}
 
 	public boolean isAbducting() {
-		return Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isTouched();
+		return (Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isTouched()) && rayMeter > 0;
 	}
 }

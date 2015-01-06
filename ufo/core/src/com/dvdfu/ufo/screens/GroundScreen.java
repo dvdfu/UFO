@@ -34,7 +34,6 @@ public class GroundScreen extends AbstractScreen {
 	private Terrain floor;
 	private ArrayList<GameObj> objects;
 	private UFO player;
-	private GUIComponent sprite;
 	private ShaderComponent shader;
 	private Pool<Sparkle> particlePool;
 	private final Array<Sparkle> particles = new Array<Sparkle>();
@@ -53,8 +52,6 @@ public class GroundScreen extends AbstractScreen {
 		player = new UFO(world);
 		objects = new ArrayList<GameObj>();
 		player.setPosition(30, floor.getHeight(30) + 10);
-		sprite = new GUIComponent(Const.atlas.findRegion("default"));
-		sprite.setCamera();
 		shader = new ShaderComponent("shaders/passthrough.vsh", "shaders/passthrough.fsh");
 		batch.setShader(shader);
 
@@ -145,12 +142,11 @@ public class GroundScreen extends AbstractScreen {
 		for (GameObj b : objects) {
 			b.draw(batch);
 		}
+		player.draw(batch);
+		batch.setProjectionMatrix(camera.combined); // this is because the UFO renders GUI sprites
 		for (Sparkle s : particles) {
 			s.draw(batch);
 		}
-		player.draw(batch);
-		// batch.flush();
-		// sprite.draw(batch, 0, 0);
 		batch.end();
 		// camera.combined.scale(10, 10, 0);
 		// debugRenderer.render(world, camera.combined);
